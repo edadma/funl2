@@ -38,8 +38,16 @@ object Main extends App {
 // 		""".stripMargin
 
 		"""
-			|write( abs(1 + i) )
- 		""".stripMargin
+				|def
+				|  filter( p, [] )             =  []
+				|  filter( p, x:xs ) | p( x )  =  x : filter( p, xs )
+				|  filter( p, _:xs )           =  filter( p, xs )
+				|
+				|  /*filter1( p, [] )            =  []
+				|  filter1( p, x:xs )          =  if p(x) then x : filter1( p, xs ) else filter1( p, xs )*/
+				|
+				|write( filter(a -> a >= 5, [3, 4, 5, 6, 2, 1, 7, 8]) )
+		""".stripMargin
 
 	val parser = new FunLParser
 	val ast = parser.parseFromString( program, parser.source ).asInstanceOf[AST]

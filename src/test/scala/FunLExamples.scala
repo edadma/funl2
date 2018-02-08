@@ -721,8 +721,13 @@ class FunLExamples extends FreeSpec with PropertyChecks with Matchers {
 				|  take( n, x:xs )       =  x : take( n - 1, xs )
 				|
 				|write( take(2, filter((>= 5), 1..10)) )
+				|write( take(2, filter(a -> a >= 5, 1..10)) )
 			""".stripMargin
-		) shouldBe "[5, 6]"
+		) shouldBe
+			"""
+				|[5, 6]
+				|[5, 6]
+			""".stripMargin.trim
 	}
 
 	"flatten" in {
