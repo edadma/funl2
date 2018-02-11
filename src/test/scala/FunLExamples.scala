@@ -446,6 +446,9 @@ class FunLExamples extends FreeSpec with PropertyChecks with Matchers {
 	"filter" in {
 		runCapture(
 			"""
+				|var multiple = 2
+				|var lower = 4
+				|
 				|def
 				|  foldl( f, z, [] )           = z
 				|  foldl( f, z, x:xs )         = foldl( f, f(z, x), xs )
@@ -457,7 +460,7 @@ class FunLExamples extends FreeSpec with PropertyChecks with Matchers {
 				|  filter( p, x:xs ) | p( x )  = x : filter( p, xs )
 				|  filter( p, _:xs )           = filter( p, xs )
 				|
-				|write( foldl((+), 0, map((*2), filter((4<), 3..6))) )
+				|write( foldl((+), 0, map((*multiple), filter((lower<), 3..6))) )
 			""".stripMargin
 		) shouldBe "22"
 	}

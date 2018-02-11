@@ -37,17 +37,39 @@ object Main extends App {
 //			|'asdf' ? write( `(asdf)` )
 // 		""".stripMargin
 
-		"""
+//		"""
+//				|def
+//				|  filter( p, [] )             =  []
+//				|  filter( p, x:xs ) | p( x )  =  x : filter( p, xs )
+//				|  filter( p, _:xs )           =  filter( p, xs )
+//				|
+//				|  /*filter1( p, [] )            =  []
+//				|  filter1( p, x:xs )          =  if p(x) then x : filter1( p, xs ) else filter1( p, xs )*/
+//				|
+//				|write( filter(a -> a >= 5, [3, 4, 5, 6, 2, 1, 7, 8]) )
+//		""".stripMargin
+
+			"""
+				|var multiple = 2
+				|var lower = 4
+				|
 				|def
-				|  filter( p, [] )             =  []
-				|  filter( p, x:xs ) | p( x )  =  x : filter( p, xs )
-				|  filter( p, _:xs )           =  filter( p, xs )
+				|  foldl( f, z, [] )           =
+				|    multiple = 2
+				|    z
+				|  foldl( f, z, x:xs )         =
+				|    multiple = 2
+				|    foldl( f, f(z, x), xs )
 				|
-				|  /*filter1( p, [] )            =  []
-				|  filter1( p, x:xs )          =  if p(x) then x : filter1( p, xs ) else filter1( p, xs )*/
+				|  map( f, [] )                = []
+				|  map( f, x:xs )              = f( x ) : map( f, xs )
 				|
-				|write( filter(a -> a >= 5, [3, 4, 5, 6, 2, 1, 7, 8]) )
-		""".stripMargin
+				|  filter( p, [] )             = []
+				|  filter( p, x:xs ) | p( x )  = x : filter( p, xs )
+				|  filter( p, _:xs )           = filter( p, xs )
+				|
+				|write( foldl((+), 0, map((*multiple), filter((lower<), 3..6))) )
+			""".stripMargin
 
 	val parser = new FunLParser
 	val ast = parser.parseFromString( program, parser.source ).asInstanceOf[AST]

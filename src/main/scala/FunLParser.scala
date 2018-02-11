@@ -561,13 +561,12 @@ class FunLParser extends StandardTokenParsers with PackratParsers {
 			case p ~ e ~ o =>
 				val s = Symbol(o)
 
-//				FunctionExpressionAST("$" + p.toString, p, List(VariableStructureAST(p, "$", "$")), false, List(FunctionPartExpressionAST(None, BinaryExpressionAST(null, e, s, lookup(s), p, VariableExpressionAST(null, "$", "$")))), WhereClauseAST(Nil)) } |
-					LeftSectionExpressionAST( p, e, s, lookup(s) )} |
+				LeftSectionExpressionAST( p, e, FunctionExpressionAST("$" + p.toString, p, List(VariableStructureAST(p, "$", "$")), false, List(FunctionPartExpressionAST(None, BinaryExpressionAST(null, e, s, lookup(s), p, VariableExpressionAST(null, "$", "$")))), WhereClauseAST(Nil)), s, lookup(s) )} |
 		"(" ~> infix ~ pos ~ applyExpression <~ ")" ^^ {
 			case o ~ p ~ e =>
 				val s = Symbol(o)
 
-				RightSectionExpressionAST( s, lookup(s), p, e )} |
+				RightSectionExpressionAST( s, lookup(s), p, e, FunctionExpressionAST("$" + p.toString, p, List(VariableStructureAST(p, "$", "$")), false, List(FunctionPartExpressionAST(None, BinaryExpressionAST(p, VariableExpressionAST(null, "$", "$"), s, lookup(s), null, e))), WhereClauseAST(Nil)) )} |
 		("true" | "false") ^^ (b => LiteralExpressionAST( b.toBoolean )) |
 		"(" ~ ")" ^^^ LiteralExpressionAST( () ) |
 		"null" ^^^ LiteralExpressionAST( null ) |
