@@ -93,6 +93,7 @@ object Main extends App {
 //	println( vm.call(code.constants("array"), List(3)) )
 }
 
+//todo: 'a' can't be accessed from 'new AnyRef {def a( x: Int ) = 123}'
 //todo: function overloading
 //todo: method invokation where parentheses are not needed for zero argument methods
 
