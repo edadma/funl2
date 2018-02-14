@@ -49,33 +49,37 @@ object Main extends App {
 //				|write( filter(a -> a >= 5, [3, 4, 5, 6, 2, 1, 7, 8]) )
 //		""".stripMargin
 
-			"""
-				|var multiple = 2
-				|var lower = 4
-				|
-				|def
-				|  foldl( f, z, [] )           =
-				|    multiple = 2
-				|    z
-				|  foldl( f, z, x:xs )         =
-				|    multiple = 2
-				|    foldl( f, f(z, x), xs )
-				|
-				|  map( f, [] )                = []
-				|  map( f, x:xs )              = f( x ) : map( f, xs )
-				|
-				|  filter( p, [] )             = []
-				|  filter( p, x:xs ) | p( x )  = x : filter( p, xs )
-				|  filter( p, _:xs )           = filter( p, xs )
-				|
-				|write( foldl((+), 0, map((*multiple), filter((lower<), 3..6))) )
-			""".stripMargin
+//			"""
+//				|var multiple = 2
+//				|var lower = 4
+//				|
+//				|def
+//				|  foldl( f, z, [] )           =
+//				|    multiple = 2
+//				|    z
+//				|  foldl( f, z, x:xs )         =
+//				|    multiple = 2
+//				|    foldl( f, f(z, x), xs )
+//				|
+//				|  map( f, [] )                = []
+//				|  map( f, x:xs )              = f( x ) : map( f, xs )
+//				|
+//				|  filter( p, [] )             = []
+//				|  filter( p, x:xs ) | p( x )  = x : filter( p, xs )
+//				|  filter( p, _:xs )           = filter( p, xs )
+//				|
+//				|write( foldl((+), 0, map((*multiple), filter((lower<), 3..6))) )
+//			""".stripMargin
+
+		"""
+			|write( $args.a )
+		""".stripMargin
 
 	val parser = new FunLParser
 	val ast = parser.parseFromString( program, parser.source ).asInstanceOf[AST]
 	val compiler = new Compiler( Predef.constants ++ Predef.natives, Predef.sysvars, Predef.macros, comments = true )
 	val code = compiler.compile( ast )
-	val vm = new VM( code, Array(), false, true, null )
+	val vm = new VM( code, Array(), false, true, new AnyRef {def a( x: Int ) = 123} )
 
 //	println( code.functions, code.variables )
 //	println( ast )
@@ -83,7 +87,7 @@ object Main extends App {
 //	vm.trace = true
 //	vm.limit = 300
 //	println( vm.call( 2, List(3) ) )
-	println( vm.execute )
+	vm.execute
 	println( vm )
 //	println( vm.call(vm.global(0), List(5, 7)) )
 //	println( vm.call(code.constants("array"), List(3)) )
