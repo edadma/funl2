@@ -244,18 +244,18 @@ class FunLParser extends StandardTokenParsers with PackratParsers {
 	lazy val declaration: PackratParser[DeclarationStatementAST] = declarationdef
 
 	lazy val constants =
-		"val" ~> constant |
+		"val" ~> rep1sep(constant, ",") ^^ DeclarationBlockAST |
 		"val" ~> Indent ~> rep1(constant <~ Newline) <~ Dedent ^^ DeclarationBlockAST
 
 	lazy val constant =
-		(structure <~ "=") ~ pos ~ expressionOrBlock ^^ { case struc ~ p ~ exp => ValAST( struc, p, exp ) }
+		(structure <~ "=") ~ pos ~ noAssignmentExpressionOrBlock ^^ { case struc ~ p ~ exp => ValAST( struc, p, exp ) }
 
 	lazy val variables: PackratParser[DeclarationStatementAST] =
-		"var" ~> variable |
+		"var" ~> rep1sep(variable, ",") ^^ DeclarationBlockAST |
 		"var" ~> Indent ~> rep1(variable <~ Newline) <~ Dedent ^^ DeclarationBlockAST
 
 	lazy val variable =
-		pos ~ ident ~ opt("=" ~> expressionOrBlock) ^^ { case p ~ n ~ v => VarAST( p, n, n, v ) }
+		pos ~ ident ~ opt("=" ~> noAssignmentExpressionOrBlock) ^^ { case p ~ n ~ v => VarAST( p, n, n, v ) }
 
 	lazy val datatypes =
 		"data" ~> datatype |
@@ -315,11 +315,30 @@ class FunLParser extends StandardTokenParsers with PackratParsers {
 
 	lazy val expressionOrBlock = expression | blockExpression
 
+	lazy val noAssignmentExpressionOrBlock = compoundExpression1 | blockExpression
+
 	lazy val blockExpression = Indent ~> statements <~ Dedent ^^ BlockExpressionAST
 
 	lazy val expression: PackratParser[ExpressionAST] = compoundExpression
 
 	lazy val compoundExpressionStatement: PackratParser[StatementAST] = logicalExpression | declaration
+
+	lazy val compoundExpression1: PackratParser[ExpressionAST] =
+		("(" ~> compoundExpressionStatement <~ ";") ~ (rep1sep( compoundExpressionStatement, ";" ) <~ ")") ^^ {
+			case f ~ l => BlockExpressionAST( f :: l ) } |
+		orExpression1
+
+	lazy val orExpression1: PackratParser[ExpressionAST] =
+		orExpression1 ~ ("or" ~> andExpression1) ^^ { case lhs ~ rhs => OrExpressionAST( lhs, rhs ) } |
+		andExpression1
+
+	lazy val andExpression1: PackratParser[ExpressionAST] =
+		andExpression1 ~ ("and" ~> notExpression1) ^^ { case lhs ~ rhs => AndExpressionAST( lhs, rhs ) } |
+		notExpression1
+
+	lazy val notExpression1: PackratParser[ExpressionAST] =
+		"not" ~> notExpression1 ^^ NotExpressionAST |
+		scanExpression
 
 	lazy val compoundExpression: PackratParser[ExpressionAST] =
 		("(" ~> compoundExpressionStatement <~ ";") ~ (rep1sep( compoundExpressionStatement, ";" ) <~ ")") ^^ {
