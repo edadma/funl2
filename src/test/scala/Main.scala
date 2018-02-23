@@ -72,9 +72,12 @@ object Main extends App {
 //			""".stripMargin
 
 		"""
-			|var a
+			|a = false
 			|
-			|write( a, b )
+			|if a
+			|  write( 1 )
+			|else
+			|  write( 0 )
 		""".stripMargin
 
 	val parser = new FunLParser
