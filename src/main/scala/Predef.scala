@@ -502,7 +502,7 @@ object Predef {
 
 		)
 
-	private val devrandom = new DataInputStream( new FileInputStream("/dev/random") )
+	private lazy val devrandom = new DataInputStream( new FileInputStream("/dev/random") )
 	private val p32 = 0x100000000L.asInstanceOf[Double]
 
 	private def rnd = devrandom.readInt.asInstanceOf[Long]&0xFFFFFFFFL
@@ -510,7 +510,7 @@ object Predef {
 	val sysvars =
 		Map(
 			"args" -> ((vm: VM) => vm.args),
-			"version" -> ((_: VM) => "FunL 1.0.0-\u03b11"),
+			"version" -> ((_: VM) => "0.4.4"),
 			"timemillis" -> ((_: VM) => BigInt( System.currentTimeMillis )),
 			"time" -> ((_: VM) => LocalTime.now),
 			"date" -> ((_: VM) => LocalDate.now),
