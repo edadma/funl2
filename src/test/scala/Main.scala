@@ -71,14 +71,7 @@ object Main extends App {
 //				|write( foldl((+), 0, map((*multiple), filter((lower<), 3..6))) )
 //			""".stripMargin
 
-		"""
-			|a = false
-			|
-			|if a
-			|  write( 1 )
-			|else
-			|  write( 0 )
-		""".stripMargin
+		"\r\nwrite( 3 )\r\nwrite( 4 )\r\n"
 
 	val parser = new FunLParser
 	val ast = parser.parseFromString( program, parser.source ).asInstanceOf[AST]
@@ -102,7 +95,7 @@ object Main extends App {
 //todo: function overloading
 //todo: method invokation where parentheses are not needed for zero argument methods
 
-//		"""
+//
 //			|def
 //			|  merge( [], ys )               = ys
 //			|  merge( xs, [] )               = xs
