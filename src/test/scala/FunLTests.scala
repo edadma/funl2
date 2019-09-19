@@ -99,6 +99,25 @@ class FunLTests extends FreeSpec with PropertyChecks with Matchers {
 		) shouldBe "7"
 	}
 
+	"closure (single parameter, accessing out of scope parameter with intervening function calls)" in {
+		runCapture(
+			"""
+				|def f( x )
+				|  def h( a ) =
+				|    if (a == 0)
+				|      def g( n ) = x + n
+				|
+				|      g
+				|    else
+				|      h( a - 1 )
+				|
+				|  h( 2 )
+				|
+				|write( f(3)(4) )
+			""".stripMargin
+		) shouldBe "7"
+	}
+
 	"closure (multi parameter)" in {
 		runCapture(
 			"""
@@ -449,13 +468,13 @@ class FunLTests extends FreeSpec with PropertyChecks with Matchers {
 			"""
 				|var k = 123
 				|
-				|write( [2k - 1 | k <- 1..<3] )
+				|write( [2k - 1 | k <- 3..<5] )
 				|
 				|write( k )
 			""".stripMargin
 		) shouldBe
 			"""
-				|[1, 3]
+				|[5, 7]
 				|123
 			""".stripMargin.trim
 	}

@@ -14,7 +14,7 @@ object Natives {
 
 	def toFloat( vm: VM, v: String ) = v.toDouble
 
-	def eval( vm: VM, expr: String ) = run( expr )
+	def eval( vm: VM, expr: String ) = xyz.hyperreal.funl2.run( expr )
 
 	def sqrt( vm: VM, n: Number ) = Math.sqrtFunction( n )
 

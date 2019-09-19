@@ -1,28 +1,24 @@
 name := "funl2"
 
-version := "0.4.5"
+version := "0.5"
 
-scalaVersion := "2.12.6"
-
-//crossScalaVersions := Seq( "2.11.11" )
+scalaVersion := "2.13.0"
 
 scalacOptions ++= Seq( "-deprecation", "-feature", "-unchecked", "-language:postfixOps", "-language:implicitConversions", "-language:existentials" )
 
 organization := "xyz.hyperreal"
 
-//resolvers += Resolver.sonatypeRepo( "snapshots" )
-
-resolvers += "Typesafe Repository" at "http://repo.typesafe.com/typesafe/releases/"
+resolvers += "Typesafe Repository" at "https://repo.typesafe.com/typesafe/releases/"
 
 resolvers += "Hyperreal Repository" at "https://dl.bintray.com/edadma/maven"
 
 libraryDependencies ++= Seq(
-  "org.scalatest" %% "scalatest" % "3.0.5" % "test",
+  "org.scalatest" %% "scalatest" % "3.0.8" % "test",
   "org.scalacheck" %% "scalacheck" % "1.14.0" % "test"
 )
 
 libraryDependencies ++= Seq(
-	"org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.0"
+	"org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.2"
 //	"org.scala-lang.modules" %% "scala-xml" % "1.0.6"
 )
 
@@ -35,13 +31,13 @@ libraryDependencies ++= Seq(
 )
 
 libraryDependencies ++= Seq(
-	"xyz.hyperreal" %% "bvm" % "0.4.3",
-	"xyz.hyperreal" %% "indentation-lexical" % "0.8.3",
-	"xyz.hyperreal" %% "lia" % "0.22.2",
-	"xyz.hyperreal" %% "json" % "0.7.1",
-	"xyz.hyperreal" %% "table" % "0.9",
-	"xyz.hyperreal" %% "options" % "0.2",
-	"xyz.hyperreal" %% "importer" % "0.4.1"
+	"xyz.hyperreal" %% "bvm" % "0.5",
+	"xyz.hyperreal" %% "indentation-lexical" % "0.9",
+	"xyz.hyperreal" %% "lia" % "0.23",
+	"xyz.hyperreal" %% "json" % "0.8.0",
+	"xyz.hyperreal" %% "table" % "0.11",
+	"xyz.hyperreal" %% "options" % "0.3",
+	"xyz.hyperreal" %% "importer" % "0.5"
 )
 
 mainClass in (Compile, run) := Some( "xyz.hyperreal." + name.value.replace('-', '_') + ".Main" )
