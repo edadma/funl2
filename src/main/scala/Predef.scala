@@ -6,7 +6,9 @@ import java.time.{LocalDate, LocalDateTime, LocalTime, ZonedDateTime}
 
 import scala.util.parsing.input.Position
 
-import scala.collection.mutable.{ArrayBuffer, ArraySeq, HashSet, LinkedHashMap}
+import scala.collection.immutable
+import scala.collection.mutable
+import scala.collection.mutable.{ArrayBuffer, HashSet, LinkedHashMap}
 import scala.math.BigInt
 import scala.util.Random.{nextDouble, nextInt, setSeed}
 import xyz.hyperreal.numbers.ComplexBigInt
@@ -59,17 +61,17 @@ object Predef {
 			"array" -> {
 				(_: VM, apos: Position, ps: List[Position], args: Any) =>
 					argsderef( args ) match {
-						case ArgList() => ArraySeq()
-						case n: Int => ArraySeq.fill[Any]( n )( undefined )
-						case ArgList( n1: Int, n2: Int ) => ArraySeq.fill[Any]( n1, n2 )( undefined )
-						case ArgList( n: Int, f: Function[_, _] ) => ArraySeq.tabulate[Any]( n )( f.asInstanceOf[Int => Any] )
-						case ArgList( n1: Int, n2: Int, f: Function2[_, _, _] ) => ArraySeq.tabulate[Any]( n1, n2 )( f.asInstanceOf[(Int, Int) => Any] )
-						case init: Array[Any] => ArraySeq[Any]( init: _* )
-						case init: Array[Byte] => ArraySeq[Any]( init: _* )
-						case init: Array[Int] => ArraySeq[Any]( init: _* )
-						case init: Seq[_] if init.nonEmpty && init.head.isInstanceOf[Seq[Any]] => ArraySeq[Any]( init.asInstanceOf[Seq[Seq[Any]]] map (e => ArraySeq[Any](e: _*)): _* )
-						case init: Seq[Any] => ArraySeq[Any]( init: _* )
-						case init: TraversableOnce[Any] => ArraySeq[Any]( init.toSeq: _* )
+						case ArgList() => mutable.ArraySeq()
+						case n: Int => mutable.ArraySeq.fill[Any]( n )( undefined )
+						case ArgList( n1: Int, n2: Int ) => mutable.ArraySeq.fill[Any]( n1, n2 )( undefined )
+						case ArgList( n: Int, f: Function[_, _] ) => mutable.ArraySeq.tabulate[Any]( n )( f.asInstanceOf[Int => Any] )
+						case ArgList( n1: Int, n2: Int, f: Function2[_, _, _] ) => mutable.ArraySeq.tabulate[Any]( n1, n2 )( f.asInstanceOf[(Int, Int) => Any] )
+						case init: Array[Any] => mutable.ArraySeq[Any]( init.toIndexedSeq: _* )
+						case init: Array[Byte] => mutable.ArraySeq[Any]( init.toIndexedSeq: _* )
+						case init: Array[Int] => mutable.ArraySeq[Any]( init.toIndexedSeq: _* )
+						case init: Seq[_] if init.nonEmpty && init.head.isInstanceOf[Seq[Any]] => mutable.ArraySeq[Any]( init.asInstanceOf[Seq[Seq[Any]]] map (e => mutable.ArraySeq[Any](e: _*)): _* )
+						case init: Seq[Any] => mutable.ArraySeq[Any]( init: _* )
+						case init: IterableOnce[Any] => mutable.ArraySeq[Any]( init.iterator.to(Seq): _* )
 					}
 				},
 			"buffer" -> {
@@ -77,28 +79,28 @@ object Predef {
 					argsderef( args ) match {
 						case ArgList() => new ArrayBuffer[Any]
 						case n: Int => ArrayBuffer.fill[Any]( n )( null )
-						case init: Array[Any] => ArrayBuffer[Any]( init: _* )
-						case init: Array[Byte] => ArrayBuffer[Any]( init: _* )
-						case init: Array[Int] => ArrayBuffer[Any]( init: _* )
+						case init: Array[Any] => ArrayBuffer[Any]( init.toIndexedSeq: _* )
+						case init: Array[Byte] => ArrayBuffer[Any]( init.toIndexedSeq: _* )
+						case init: Array[Int] => ArrayBuffer[Any]( init.toIndexedSeq: _* )
 						case init: Seq[_] if init.nonEmpty && init.head.isInstanceOf[Seq[Any]] =>
 							ArrayBuffer[Any]( init map (e => ArrayBuffer[Any](e.asInstanceOf[Seq[Any]]: _*)): _* )
-						case init: Seq[Any] => ArrayBuffer[Any]( init: _* )
-						case init: TraversableOnce[Any] => ArrayBuffer[Any]( init.toSeq: _* )
+						case init: Seq[Any] => ArrayBuffer[Any]( init.toIndexedSeq: _* )
+						case init: IterableOnce[Any] => ArrayBuffer[Any]( init.iterator.to(Seq): _* )
 					}
 				},
 			"seq" -> {
 				(_: VM, apos: Position, ps: List[Position], args: Any) =>
 					argsderef( args ) match {
-						case ArgList() => Vector()
-						case a: ArgList => Vector( a.array: _* )
-						case init: Array[Any] => Vector[Any]( init: _* )
-						case init: Array[Byte] => Vector[Any]( init: _* )
-						case init: Array[Int] => Vector[Any]( init: _* )
+						case ArgList() => immutable.ArraySeq()
+						case a: ArgList => immutable.ArraySeq( a.array: _* )
+						case init: Array[Any] => immutable.ArraySeq[Any]( init.toIndexedSeq: _* )
+						case init: Array[Byte] => immutable.ArraySeq[Any]( init.toIndexedSeq: _* )
+						case init: Array[Int] => immutable.ArraySeq[Any]( init.toIndexedSeq: _* )
 						case init: Seq[_] if init.nonEmpty && init.head.isInstanceOf[Seq[Any]] =>
-							Vector[Any]( init map (e => Vector[Any](e.asInstanceOf[Seq[Any]]: _*)): _* )
-						case init: Seq[Any] => Vector[Any]( init: _* )
-						case init: TraversableOnce[Any] => Vector[Any]( init.toSeq: _* )
-						case _ => Vector( args )
+							immutable.ArraySeq[Any]( init map (e => immutable.ArraySeq[Any](e.asInstanceOf[Seq[Any]]: _*)): _* )
+						case init: Seq[Any] => immutable.ArraySeq[Any]( init.toIndexedSeq: _* )
+						case init: IterableOnce[Any] => immutable.ArraySeq[Any]( init.iterator.to(Seq): _* )
+						case _ => immutable.ArraySeq( args )
 					}
 				},
 			"set" -> {
@@ -106,11 +108,11 @@ object Predef {
 					argsderef( args ) match {
 						case ArgList() => new HashSet[Any]
 						case a: ArgList => HashSet( a.array: _* )
-						case init: Array[Any] => HashSet[Any]( init: _* )
-						case init: Array[Byte] => HashSet[Any]( init: _* )
-						case init: Array[Int] => HashSet[Any]( init: _* )
+						case init: Array[Any] => HashSet[Any]( init.toIndexedSeq: _* )
+						case init: Array[Byte] => HashSet[Any]( init.toIndexedSeq: _* )
+						case init: Array[Int] => HashSet[Any]( init.toIndexedSeq: _* )
 						case x: Seq[Any] => HashSet( x: _* )
-						case x: TraversableOnce[Any] => HashSet( x.toSeq: _* )
+						case x: IterableOnce[Any] => HashSet( x.iterator.to(Seq): _* )
 						case _ => HashSet( args )
 					}
 				},
@@ -118,8 +120,8 @@ object Predef {
 				(_: VM, apos: Position, ps: List[Position], args: Any) =>
 					argsderef( args ) match {
 						case ArgList() => new HashSet[Any]
-						case a: Array[_] => new Tuple( a )
-						case s: Iterable[Any] => new Tuple( s.toIndexedSeq )
+						case a: Array[Any] => new Tuple( immutable.ArraySeq.from(a) )
+						case s: Iterable[Any] => new Tuple( immutable.ArraySeq.from(s) )
 					}
 				},
 			"table" -> {
@@ -217,7 +219,7 @@ object Predef {
 					s.indexOf( q, f ) match {
 						case -1 => Fail
 						case idx =>
-							def nextchoice( from: Int ) {
+							def nextchoice( from: Int ): Unit = {
 								s.indexOf( q, from + 1 ) match {
 									case -1 =>
 									case nextidx =>
@@ -259,7 +261,7 @@ object Predef {
 					s.indexWhere( set, f ) match {
 						case -1 => Fail
 						case idx =>
-							def nextchoice( from: Int ) {
+							def nextchoice( from: Int ): Unit = {
 								s.indexWhere( set, from + 1 ) match {
 									case -1 =>
 									case nextidx =>
@@ -295,7 +297,7 @@ object Predef {
 							else
 								s.length + 1
 						case idx =>
-							def nextchoice( from: Int ) {
+							def nextchoice( from: Int ): Unit = {
 								s.indexWhere( set, from + 1 ) match {
 									case -1 =>
 										if (vm.scanpos != vm.seq.length)
@@ -545,7 +547,7 @@ object Predef {
 					"vendor" -> System.getProperty("java.vendor"),
 					"version" -> System.getProperty("java.version"),
 					"home" -> System.getProperty("java.home") )),
-			"vmscaninfo" -> ((vm: VM) => new Tuple( Vector(vm.seq, vm.scanpos + 1) )),
+			"vmscaninfo" -> ((vm: VM) => new Tuple( immutable.ArraySeq(vm.seq, vm.scanpos + 1) )),
 			"vmstacksize" -> ((vm: VM) => vm.getdata.size),
 			"rndi" -> ((vm: VM) => BigInt( rnd )),
 			"rnd" -> ((vm: VM) => rnd/p32)

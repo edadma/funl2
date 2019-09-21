@@ -13,7 +13,7 @@ package object funl2 {
 		if (pos eq null)
 			sys.error( error )
 		else
-			sys.error( pos.line + ": " + error + "\n" + pos.longString )
+			sys.error( s"${pos.line}: $error\n${pos.longString}" )
 
 	def run( program: String, args: Any = null ) = {
 		val parser = new FunLParser

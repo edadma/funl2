@@ -56,7 +56,7 @@ class FunLLexical extends IndentationLexical(false, true, List("{", "[", "("), L
 	private def escape( s: String) = {
 		val buf = new StringBuilder
 
-		def chr( r: Reader[Char] ) {
+		def chr( r: Reader[Char] ): Unit = {
 			if (!r.atEnd) {
 				if (r.first == '\\') {
 					if (r.rest.atEnd)
@@ -104,7 +104,7 @@ class FunLLexical extends IndentationLexical(false, true, List("{", "[", "("), L
 		var last = 0
 		var nonliteral = false
 
-		def append( code: Char, s: String ) {
+		def append( code: Char, s: String ): Unit = {
 			buf += code
 			buf append s
 		}
@@ -135,9 +135,9 @@ class FunLLexical extends IndentationLexical(false, true, List("{", "[", "("), L
 	}
 
 	private def decimalToken: Parser[Token] =
-		digits ~ '.' ~ digits ~ optExponent ^^ { case intPart ~ _ ~ fracPart ~ exp => NumericLit(intPart + '.' + fracPart + exp) } |
-		'.' ~ digits ~ optExponent ^^ { case _ ~ fracPart ~ exp => NumericLit('.' + fracPart + exp) } |
-		digits ~ optExponent ^^ { case intPart ~ exp => NumericLit(intPart + exp) }
+		digits ~ '.' ~ digits ~ optExponent ^^ { case intPart ~ _ ~ fracPart ~ exp => NumericLit(s"$intPart.$fracPart$exp") } |
+		'.' ~ digits ~ optExponent ^^ { case _ ~ fracPart ~ exp => NumericLit(s".$fracPart$exp") } |
+		digits ~ optExponent ^^ { case intPart ~ exp => NumericLit(s"$intPart$exp") }
 
 	private def digits = rep1(digit) ^^ (_ mkString)
 
@@ -153,14 +153,14 @@ class FunLLexical extends IndentationLexical(false, true, List("{", "[", "("), L
 		case Some(e) => e
 	}
 
-	reserved += (
+	reserved ++= List(
 		"if", "then", "else", "elif", "every", "for", "while", "break", "continue", "return", "do", "fail", "yield",
 		"repeat", "by", "or", "and", "is", "not", "div", "mod", "to", "until", "where",
 		"def", "var", "val", "data", "otherwise", "module", //todo: implement module system similar to Modula
 		"null", "true", "false", "undefined"
 	)
 
-	delimiters += (
+	delimiters ++= List(
 		"+", "*", "-", "/", "\\", "//", "%", "^", "(", ")", "[", "]", "{", "}", ",", "=", "==", "!=", "<", ">", "<=", ">=",
 		"\\?", ":", "->", ".", ";", "?", "!", "<-", "..", "..<", "..+", "..-", "$", "&", "|", ".>", "@",
 		"+=", "++=", "-=", "--=", "*=", "/=", "//=",
@@ -419,11 +419,11 @@ class FunLParser extends StandardTokenParsers with PackratParsers {
 //		"otherwise" ~> "->" ~> opt(expressionOrBlock) ^^ {
 //			b => FunctionExpressionAST( List(VariableStructureAST(null, "_")), false, List(FunctionPartExpressionAST(None, b.getOrElse(LiteralExpressionAST(())))), WhereClauseAST(Nil) ) }
 
-	private lazy val mathSymbols = Set( '+, '-, '*, '/, '//, Symbol("\\"), Symbol("\\%"), '^, '%, 'mod, 'div, '==, '!=, '<, '>, '<=, '>= )
+	private lazy val mathSymbols = Set( Symbol("+"), Symbol("-"), Symbol("*"), Symbol("/"), Symbol("//"), Symbol("\\"), Symbol("\\%"), Symbol("^"), Symbol("%"), Symbol("mod"), Symbol("div"), Symbol("=="), Symbol("!="), Symbol("<"), Symbol(">"), Symbol("<="), Symbol(">=") )
 
 	private def lookup( s: Symbol ) =
 		if (mathSymbols contains s)
-			Math.lookup( if (s == 'div) '| else s )
+			Math.lookup( if (s == Symbol("div")) Symbol("|") else s )
 		else
 			null
 
@@ -461,7 +461,7 @@ class FunLParser extends StandardTokenParsers with PackratParsers {
 
 	lazy val consExpression: PackratParser[ExpressionAST] =
 		pos ~ rangeExpression ~ (":" ~> pos) ~ consExpression ^^ {
-			case ph ~ h ~ pt ~ t => BinaryExpressionAST( ph, h, ':, null, pt, t ) } |
+			case ph ~ h ~ pt ~ t => BinaryExpressionAST( ph, h, Symbol(":"), null, pt, t ) } |
 		rangeExpression
 
 	lazy val rangeExpression: PackratParser[ExpressionAST] =
@@ -472,14 +472,14 @@ class FunLParser extends StandardTokenParsers with PackratParsers {
 			case pf ~ f ~ pt ~ t ~ Some(pb ~ b) => RangeExpressionAST( pf, f, pt, t, pb, b, false )
 			case pf ~ f ~ pt ~ t ~ None => RangeExpressionAST( pf, f, pt, t, null, LiteralExpressionAST(1), false ) } |
 		pos ~ (additiveExpression <~ "..+") ~ pos ~ additiveExpression ~ opt("by" ~> pos ~ additiveExpression) ^^ {
-			case pf ~ f ~ pt ~ t ~ Some(pb ~ b) => RangeExpressionAST( pf, f, pt, BinaryExpressionAST(null, f, '+, lookup('+), null, t), pb, b, false )
-			case pf ~ f ~ pt ~ t ~ None => RangeExpressionAST( pf, f, pt, BinaryExpressionAST(null, f, '+, lookup('+), null, t), null, LiteralExpressionAST(1), false ) } |
+			case pf ~ f ~ pt ~ t ~ Some(pb ~ b) => RangeExpressionAST( pf, f, pt, BinaryExpressionAST(null, f, Symbol("+"), lookup(Symbol("+")), null, t), pb, b, false )
+			case pf ~ f ~ pt ~ t ~ None => RangeExpressionAST( pf, f, pt, BinaryExpressionAST(null, f, Symbol("+"), lookup(Symbol("+")), null, t), null, LiteralExpressionAST(1), false ) } |
 		pos ~ (additiveExpression <~ "..-") ~ pos ~ additiveExpression ~ opt("by" ~> pos ~ additiveExpression) ^^ {
-			case pf ~ f ~ pt ~ t ~ Some(pb ~ b) => RangeExpressionAST( pf, f, pt, BinaryExpressionAST(null, f, '-, lookup('-), null, t), pb, b, false )
-			case pf ~ f ~ pt ~ t ~ None => RangeExpressionAST( pf, f, pt, BinaryExpressionAST(null, f, '-, lookup('-), null, t), null, LiteralExpressionAST(-1), false ) } |
+			case pf ~ f ~ pt ~ t ~ Some(pb ~ b) => RangeExpressionAST( pf, f, pt, BinaryExpressionAST(null, f, Symbol("-"), lookup(Symbol("-")), null, t), pb, b, false )
+			case pf ~ f ~ pt ~ t ~ None => RangeExpressionAST( pf, f, pt, BinaryExpressionAST(null, f, Symbol("-"), lookup(Symbol("-")), null, t), null, LiteralExpressionAST(-1), false ) } |
 		pos ~ (additiveExpression <~ "..") ~ opt("by" ~> pos ~ additiveExpression) ^^ {
-			case pf ~ f ~ None => UnboundedStreamExpressionAST( pf, f, null, LiteralExpressionAST(1) )
-			case pf ~ f ~ Some(pb ~ b) => UnboundedStreamExpressionAST( pf, f, pb, b ) } |
+			case pf ~ f ~ None => UnboundedLazyListExpressionAST( pf, f, null, LiteralExpressionAST(1) )
+			case pf ~ f ~ Some(pb ~ b) => UnboundedLazyListExpressionAST( pf, f, pb, b ) } |
 		pos ~ additiveExpression ~ ("to" | "until") ~ pos ~ additiveExpression ~ opt("by" ~> pos ~ additiveExpression) ^^ {
 			case pf ~ f ~ op ~ pt ~ t ~ Some(pb ~ b) => SequenceExpressionAST( pf, f, pt, t, pb, b, if (op == "to") true else false )
 			case pf ~ f ~ op ~ pt ~ t ~ None => SequenceExpressionAST( pf, f, pt, t, null, LiteralExpressionAST(1), if (op == "to") true else false ) } |
@@ -500,18 +500,18 @@ class FunLParser extends StandardTokenParsers with PackratParsers {
 
 				BinaryExpressionAST( pl, l, s, lookup(s), pr, r ) } |
 		pos ~ multiplicativeExpression ~ pos ~ applyExpression ^^ {
-			case pl ~ l ~ pr ~ r => BinaryExpressionAST( pl, l, 'adj, lookup('*), pr, r ) } |
+			case pl ~ l ~ pr ~ r => BinaryExpressionAST( pl, l, Symbol("adj"), lookup(Symbol("*")), pr, r ) } |
 		exponentialExpression
 
 	lazy val exponentialExpression: PackratParser[ExpressionAST] =
 		pos ~ unaryExpression ~ "^" ~ pos ~ exponentialExpression ^^ {
-			case pl ~ l ~ _ ~ pr ~ r => BinaryExpressionAST( pl, l, '^, lookup('^), pr, r ) } |
+			case pl ~ l ~ _ ~ pr ~ r => BinaryExpressionAST( pl, l, Symbol("^"), lookup(Symbol("^")), pr, r ) } |
 		unaryExpression
 
 	lazy val unaryExpression: PackratParser[ExpressionAST] =
 		"-" ~> pos ~ incrementExpression ^^ {
-			case _ ~ LiteralExpressionAST( n: Number ) => LiteralExpressionAST( Math('-, n) )
-			case p ~ v                                 => UnaryExpressionAST( '-, null, p, v ) } |
+			case _ ~ LiteralExpressionAST( n: Number ) => LiteralExpressionAST( Math(Symbol("-"), n) )
+			case p ~ v                                 => UnaryExpressionAST( Symbol("-"), null, p, v ) } |
 		"." ~> incrementExpression ^^ DereferenceExpressionAST |
 		incrementExpression
 

@@ -111,7 +111,7 @@ class FunLTests extends FreeSpec with PropertyChecks with Matchers {
 				|    else
 				|      h( a - 1 )
 				|
-				|  h( 2 )
+				|  h( 5 )
 				|
 				|write( f(3)(4) )
 			""".stripMargin
