@@ -1,10 +1,10 @@
 package xyz.hyperreal.funl2
 
 import org.scalatest._
-import prop.PropertyChecks
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
 
-class FunLTests extends FreeSpec with PropertyChecks with Matchers {
+class FunLTests extends FreeSpec with ScalaCheckPropertyChecks with Matchers {
 
 	"named pattern" in {
 		runCapture(
@@ -114,6 +114,42 @@ class FunLTests extends FreeSpec with PropertyChecks with Matchers {
 				|  h( 5 )
 				|
 				|write( f(3)(4) )
+			""".stripMargin
+		) shouldBe "7"
+	}
+
+	"closure (single parameter, accessing out of scope parameter) 2" in {
+		runCapture(
+			"""
+				|def f( x )
+				|  def g( n ) = x + n
+				|
+				|  g
+				|
+				|def h( x, y ) = x( y )
+				|
+				|write( h(f(3), 4) )
+			""".stripMargin
+		) shouldBe "7"
+	}
+
+	"closure (single parameter, accessing out of scope parameter with intervening function calls) 2" in {
+		runCapture(
+			"""
+				|def f( a, b, x )
+				|  def h( a ) =
+				|    if (a == 0)
+				|      def g( n ) = x + n
+				|
+				|      g
+				|    else
+				|      h( a - 1 )
+				|
+				|  h( 5 )
+				|
+				|def h( a, b, x, y ) = x( y )
+				|
+				|write( h(1, 2, f(1, 2, 3), 4) )
 			""".stripMargin
 		) shouldBe "7"
 	}

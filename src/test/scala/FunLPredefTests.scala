@@ -1,10 +1,10 @@
 package xyz.hyperreal.funl2
 
 import org.scalatest._
-import prop.PropertyChecks
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
 
-class FunLPredefTests extends FreeSpec with PropertyChecks with Matchers {
+class FunLPredefTests extends FreeSpec with ScalaCheckPropertyChecks with Matchers {
 
 	"swap" in {
 		runCapture(
