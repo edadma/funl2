@@ -465,6 +465,22 @@ class FunLExamples extends FreeSpec with ScalaCheckPropertyChecks with Matchers 
 		) shouldBe "22"
 	}
 
+	"levenshtein" in {
+		runCapture(
+			"""
+				|def levenshtein( s1, s2 ) = lev( s1.length(), s2.length(), s1, s2 )
+				|
+				|def lev( i, j, a, b )
+				|  | i | j == 0  =  max( i, j )
+				|  | otherwise   =  min( lev(i - 1, j, a, b) + 1,
+				|                        lev(i, j - 1, a, b) + 1,
+				|                        lev(i - 1, j - 1, a, b) + (if a[i] == b[j] then 0 else 1) )
+				|
+				|write( levenshtein('kitten', 'sitting') )
+			""".stripMargin
+		) shouldBe "3"
+	}
+
 	"fibonacci 1" in {
 		runCapture(
 			"""
