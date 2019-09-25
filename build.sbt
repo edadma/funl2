@@ -8,6 +8,8 @@ scalacOptions ++= Seq( "-deprecation", "-feature", "-unchecked", "-language:post
 
 organization := "xyz.hyperreal"
 
+Global / onChangedBuildSource := ReloadOnSourceChanges
+
 resolvers += "Typesafe Repository" at "https://repo.typesafe.com/typesafe/releases/"
 
 resolvers += "Hyperreal Repository" at "https://dl.bintray.com/edadma/maven"
@@ -31,7 +33,7 @@ libraryDependencies ++= Seq(
 )
 
 libraryDependencies ++= Seq(
-	"xyz.hyperreal" %% "bvm" % "0.5",
+	"xyz.hyperreal" %% "bvm" % "0.5.5",
 	"xyz.hyperreal" %% "indentation-lexical" % "0.9",
 	"xyz.hyperreal" %% "lia" % "0.23",
 	"xyz.hyperreal" %% "json" % "0.8.0",

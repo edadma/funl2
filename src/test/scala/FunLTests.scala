@@ -154,6 +154,21 @@ class FunLTests extends FreeSpec with ScalaCheckPropertyChecks with Matchers {
 		) shouldBe "7"
 	}
 
+	"closure (single parameter, accessing out of scope parameter with intervening function calls) 3" in {
+		runCapture(
+			"""
+				|def f( a )
+				|  def g( b ) = a + b
+				|
+				|  h( g, 4 )
+				|
+				|def h(fn, x) = fn( x )
+				|
+				|write( f(3) )
+ 			""".stripMargin
+		) shouldBe "7"
+	}
+
 	"closure (multi parameter)" in {
 		runCapture(
 			"""

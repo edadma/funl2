@@ -3,8 +3,9 @@ package xyz.hyperreal
 import java.io.ByteArrayOutputStream
 
 import scala.util.parsing.input.Position
-
 import xyz.hyperreal.bvm._
+
+import scala.collection.immutable.ArraySeq
 
 
 package object funl2 {
@@ -19,7 +20,7 @@ package object funl2 {
 		val parser = new FunLParser
 		val ast = parser.parseFromString( program, parser.source ).asInstanceOf[AST]
 		val code = new Compiler( Predef.constants ++ Predef.natives, Predef.sysvars, Predef.macros, comments = true ).compile( ast )
-		val vm = new VM( code, Array(), false, false, args )
+		val vm = new VM( code, ArraySeq(), false, false, args )
 
 		vm.execute
 	}
