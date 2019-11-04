@@ -34,12 +34,7 @@ libraryDependencies ++= Seq(
 
 libraryDependencies ++= Seq(
 	"xyz.hyperreal" %% "bvm" % "0.5.5",
-	"xyz.hyperreal" %% "indentation-lexical" % "0.9",
-	"xyz.hyperreal" %% "lia" % "0.23",
-	"xyz.hyperreal" %% "json" % "0.8.0",
-	"xyz.hyperreal" %% "table" % "0.11",
-	"xyz.hyperreal" %% "options" % "0.3",
-	"xyz.hyperreal" %% "importer" % "0.5"
+	"xyz.hyperreal" %% "indentation-lexical" % "0.9"
 )
 
 mainClass in (Compile, run) := Some( "xyz.hyperreal." + name.value.replace('-', '_') + ".Main" )
