@@ -25,14 +25,6 @@ libraryDependencies ++= Seq(
 )
 
 libraryDependencies ++= Seq(
-	"com.typesafe" % "config" % "1.3.4"
-)
-
-libraryDependencies ++= Seq(
-	"jline" % "jline" % "2.14.6"
-)
-
-libraryDependencies ++= Seq(
 	"xyz.hyperreal" %% "bvm" % "0.5.5",
 	"xyz.hyperreal" %% "indentation-lexical" % "0.9"
 )
