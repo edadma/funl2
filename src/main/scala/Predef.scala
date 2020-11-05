@@ -411,12 +411,12 @@ object Predef {
           padding * diff + src
         }
       },
-      "number" -> { (vm: VM, apos: Position, ps: List[Position], args: Any) =>
+      "float" -> { (vm: VM, apos: Position, ps: List[Position], args: Any) =>
         deref(args) match {
-          case n: Number => n
+          case n: Number => n.doubleValue
           case s: String => s.toDouble
           case _ =>
-            problem(ps.headOption.getOrElse(apos), s"number: expected a number")
+            problem(ps.headOption.getOrElse(apos), s"float: expected a number")
         }
       },
       "integer" -> { (vm: VM, apos: Position, ps: List[Position], args: Any) =>
