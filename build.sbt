@@ -1,6 +1,6 @@
 name := "funl2"
 
-version := "0.5"
+version := "0.5.1"
 
 scalaVersion := "2.13.3"
 
@@ -22,14 +22,6 @@ libraryDependencies ++= Seq(
 libraryDependencies ++= Seq(
 	"org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.2"
 //	"org.scala-lang.modules" %% "scala-xml" % "1.0.6"
-)
-
-libraryDependencies ++= Seq(
-	"com.typesafe" % "config" % "1.3.4"
-)
-
-libraryDependencies ++= Seq(
-	"jline" % "jline" % "2.14.6"
 )
 
 libraryDependencies ++= Seq(
