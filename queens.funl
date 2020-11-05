@@ -1,0 +1,17 @@
+val n = integer($args(0))
+
+var solution = array( n )
+var up = array( 2n - 1 )
+var down = array( 2n - 1 )
+var row = array( n )
+
+def solve( c )
+  every row(r = 0 until n) == down(r + c) == up(n - 1 + r - c) == undefined and row(r) <- down(r + c) <- up(n - 1 + r - c) <- r
+    solution(c) = r
+
+    if c == n - 1
+      write( seq(solution) )
+    else
+      solve( c + 1 )
+
+solve( 0 )

@@ -23,15 +23,15 @@ object Main extends App {
 	val ast = parser.parseFromString( program, parser.source ).asInstanceOf[AST]
 	val compiler = new Compiler( Predef.constants ++ Predef.natives, Predef.sysvars, Predef.macros, comments = true )
 	val code = compiler.compile( ast )
-	val vm = new VM( code, ArraySeq(), false, true, new AnyRef {def a( x: Int ) = 123} )
+	val vm = new VM( code, ArraySeq(), false, true, args.tail )
 
 //	println( code.functions, code.variables )
 //	println( ast )
-	println( code.code.zipWithIndex map {case (c, i) => s"$i\t$c"} mkString "\n" )
-	vm.trace = true
+//	println( code.code.zipWithIndex map {case (c, i) => s"$i\t$c"} mkString "\n" )
+//	vm.trace = true
 //	vm.limit = 300
 	vm.execute
-	println( vm )
+//	println( vm )
 }
 
 //todo: 'a' can't be accessed from 'new AnyRef {def a( x: Int ) = 123}'

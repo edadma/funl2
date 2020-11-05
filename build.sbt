@@ -2,7 +2,7 @@ name := "funl2"
 
 version := "0.5"
 
-scalaVersion := "2.13.1"
+scalaVersion := "2.13.3"
 
 scalacOptions ++= Seq( "-deprecation", "-feature", "-unchecked", "-language:postfixOps", "-language:implicitConversions", "-language:existentials" )
 

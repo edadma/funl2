@@ -2,15 +2,15 @@
 package xyz.hyperreal.funl2
 
 import scala.collection.mutable.ListBuffer
-
 import util.parsing.combinator.PackratParsers
 import util.parsing.combinator.syntactical.StandardTokenParsers
 import util.parsing.input.CharArrayReader.EofCh
 import util.parsing.input.{CharSequenceReader, Positional, Reader}
-
 import xyz.hyperreal.indentation_lexical._
 import xyz.hyperreal.lia.Math
 import xyz.hyperreal.bvm._
+
+import scala.util.Using
 
 
 object Interpolation {
@@ -178,7 +178,7 @@ class FunLParser extends StandardTokenParsers with PackratParsers {
 
 	def parse[T]( grammar: PackratParser[T], r: Reader[Char] ) = phrase(grammar)(lexical.read(r))
 
-	def parseFromSource[T]( src: io.Source, grammar: PackratParser[T] ) = parseFromString(src.mkString, grammar)
+	def parseFromSource[T]( src: io.Source, grammar: PackratParser[T] ) = parseFromString(Using(src)(_.mkString).get, grammar)
 
 	def parseFromString[T]( src: String, grammar: PackratParser[T] ) = {
 		parse(grammar, new CharSequenceReader(src)) match {
