@@ -484,7 +484,7 @@ object Predef {
       },
       "rnd" -> { (vm: VM, apos: Position, ps: List[Position], args: Any) =>
         argsderef(args) match {
-          case ArgList()                         => nextDouble.asInstanceOf[Number]
+          case ArgList()                         => nextDouble().asInstanceOf[Number]
           case ArgList(l: Int, u: Int) if l <= u => nextInt(u - l) + l
           case n: Int                            => nextInt(n)
           case r: collection.immutable.Range =>
