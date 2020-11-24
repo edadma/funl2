@@ -9,17 +9,20 @@ import scala.collection.immutable.ArraySeq
 
 package object funl2 {
 
-  def problem(pos: Position, error: String) =
+  def problem(pos: Position, error: String): Nothing =
     if (pos eq null)
       sys.error(error)
     else
       sys.error(s"${pos.line}: $error\n${pos.longString}")
 
-  def run(program: String, args: Any = null) = {
+  def run(program: String,
+          constants: Map[String, Any] = Map(),
+          sysvars: Map[String, VM => Any] = Map(),
+          args: Any = null): Any = {
     val parser = new FunLParser
     val ast = parser.parseFromString(program, parser.source).asInstanceOf[AST]
-    val code = new Compiler(Predef.constants ++ Predef.natives,
-                            Predef.sysvars,
+    val code = new Compiler(Predef.constants ++ Predef.natives ++ constants,
+                            Predef.sysvars ++ sysvars,
                             Predef.macros,
                             comments = true).compile(ast)
     val vm = new VM(code, ArraySeq(), false, false, args)

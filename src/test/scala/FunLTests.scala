@@ -3,25 +3,24 @@ package xyz.hyperreal.funl2
 import org.scalatest._
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
-
 class FunLTests extends FreeSpec with ScalaCheckPropertyChecks with Matchers {
 
-	"named pattern" in {
-		runCapture(
-			"""
+  "named pattern" in {
+    runCapture(
+      """
 				|for x@(a, b) <- [(3, 4), (5, 6)]
 				|  write( x, a, b )
 			""".stripMargin
-		) shouldBe
-			"""
+    ) shouldBe
+      """
 				|(3, 4), 3, 4
 				|(5, 6), 5, 6
 			""".stripMargin.trim
-	}
+  }
 
-	"anonymous functions" in {
-		runCapture(
-			"""
+  "anonymous functions" in {
+    runCapture(
+      """
 				|val a = 5
 				|val f = x -> x + a
 				|
@@ -29,12 +28,12 @@ class FunLTests extends FreeSpec with ScalaCheckPropertyChecks with Matchers {
 				|
 				|write( g(f, 3) )
 			""".stripMargin
-		) shouldBe "8"
-	}
+    ) shouldBe "8"
+  }
 
-	"anonymous functions (currying 1)" in {
-		runCapture(
-			"""
+  "anonymous functions (currying 1)" in {
+    runCapture(
+      """
 				|multiply = (n, m) -> (n * m)
 				|write( multiply(3, 4) )
 				|
@@ -42,16 +41,16 @@ class FunLTests extends FreeSpec with ScalaCheckPropertyChecks with Matchers {
 				|triple = curryedMultiply( 3 )
 				|write( triple(4) )
 			""".stripMargin
-		) shouldBe
-			"""
+    ) shouldBe
+      """
 				|12
 				|12
 			""".stripMargin.trim
-	}
+  }
 
-	"anonymous functions (currying 2)" in {
-		runCapture(
-			"""
+  "anonymous functions (currying 2)" in {
+    runCapture(
+      """
 				|curry = f -> a -> b -> f(a, b)
 				|uncurry = f -> (a, b) -> f(a)(b)
 				|
@@ -64,18 +63,18 @@ class FunLTests extends FreeSpec with ScalaCheckPropertyChecks with Matchers {
 				|write( uncurry(curry(add))(5,6) )
 				|write( curry(uncurry(curriedAdd))(5)(6) )
 			""".stripMargin
-		) shouldBe
-			"""
+    ) shouldBe
+      """
 				|11
 				|11
 				|11
 				|11
 			""".stripMargin.trim
-	}
+  }
 
-	"closure (single parameter)" in {
-		runCapture(
-			"""
+  "closure (single parameter)" in {
+    runCapture(
+      """
 				|def f( x )
 				|  def g( n ) = x + n
 				|
@@ -83,12 +82,12 @@ class FunLTests extends FreeSpec with ScalaCheckPropertyChecks with Matchers {
 				|
 				|write( f(3) )
 			""".stripMargin
-		) shouldBe "9"
-	}
+    ) shouldBe "9"
+  }
 
-	"closure (single parameter, accessing out of scope parameter)" in {
-		runCapture(
-			"""
+  "closure (single parameter, accessing out of scope parameter)" in {
+    runCapture(
+      """
 				|def f( x )
 				|  def g( n ) = x + n
 				|
@@ -96,12 +95,12 @@ class FunLTests extends FreeSpec with ScalaCheckPropertyChecks with Matchers {
 				|
 				|write( f(3)(4) )
 			""".stripMargin
-		) shouldBe "7"
-	}
+    ) shouldBe "7"
+  }
 
-	"closure (single parameter, accessing out of scope parameter with intervening function calls)" in {
-		runCapture(
-			"""
+  "closure (single parameter, accessing out of scope parameter with intervening function calls)" in {
+    runCapture(
+      """
 				|def f( x )
 				|  def h( a ) =
 				|    if (a == 0)
@@ -115,12 +114,12 @@ class FunLTests extends FreeSpec with ScalaCheckPropertyChecks with Matchers {
 				|
 				|write( f(3)(4) )
 			""".stripMargin
-		) shouldBe "7"
-	}
+    ) shouldBe "7"
+  }
 
-	"closure (single parameter, accessing out of scope parameter) 2" in {
-		runCapture(
-			"""
+  "closure (single parameter, accessing out of scope parameter) 2" in {
+    runCapture(
+      """
 				|def f( x )
 				|  def g( n ) = x + n
 				|
@@ -130,12 +129,12 @@ class FunLTests extends FreeSpec with ScalaCheckPropertyChecks with Matchers {
 				|
 				|write( h(f(3), 4) )
 			""".stripMargin
-		) shouldBe "7"
-	}
+    ) shouldBe "7"
+  }
 
-	"closure (single parameter, accessing out of scope parameter with intervening function calls) 2" in {
-		runCapture(
-			"""
+  "closure (single parameter, accessing out of scope parameter with intervening function calls) 2" in {
+    runCapture(
+      """
 				|def f( a, b, x )
 				|  def h( a ) =
 				|    if (a == 0)
@@ -151,12 +150,12 @@ class FunLTests extends FreeSpec with ScalaCheckPropertyChecks with Matchers {
 				|
 				|write( h(1, 2, f(1, 2, 3), 4) )
 			""".stripMargin
-		) shouldBe "7"
-	}
+    ) shouldBe "7"
+  }
 
-	"closure (single parameter, accessing out of scope parameter with intervening function calls) 3" in {
-		runCapture(
-			"""
+  "closure (single parameter, accessing out of scope parameter with intervening function calls) 3" in {
+    runCapture(
+      """
 				|def f( a )
 				|  def g( b ) = a + b
 				|
@@ -166,12 +165,12 @@ class FunLTests extends FreeSpec with ScalaCheckPropertyChecks with Matchers {
 				|
 				|write( f(3) )
  			""".stripMargin
-		) shouldBe "7"
-	}
+    ) shouldBe "7"
+  }
 
-	"closure (multi parameter)" in {
-		runCapture(
-			"""
+  "closure (multi parameter)" in {
+    runCapture(
+      """
 				|def f( x, y )
 				|  def g( m, n ) = x + y + m + n
 				|
@@ -179,12 +178,12 @@ class FunLTests extends FreeSpec with ScalaCheckPropertyChecks with Matchers {
 				|
 				|write( f(3, 4) )
 			""".stripMargin
-		) shouldBe "19"
-	}
+    ) shouldBe "19"
+  }
 
-	"closure (with locals)" in {
-		runCapture(
-			"""
+  "closure (with locals)" in {
+    runCapture(
+      """
 				|def f( x, y )
 				|  val (u, v) = (7, 8)
 				|
@@ -194,12 +193,12 @@ class FunLTests extends FreeSpec with ScalaCheckPropertyChecks with Matchers {
 				|
 				|write( f(3, 4) )
 			""".stripMargin
-		) shouldBe "86"
-	}
+    ) shouldBe "86"
+  }
 
-	"if/elif/else" in {
-		runCapture(
-			"""
+  "if/elif/else" in {
+    runCapture(
+      """
 				|def f( n ) = if n == 1 then 'a' elif n == 2 then 'b' else 'c'
 				|
 				|write( [f(k) | k <- 1..3] )
@@ -211,17 +210,17 @@ class FunLTests extends FreeSpec with ScalaCheckPropertyChecks with Matchers {
 				|
 				|write( 3 )
 			""".stripMargin
-		) shouldBe
-		"""
+    ) shouldBe
+      """
 			|["a", "b", "c"]
 			|1
 			|3
 		""".stripMargin.trim
-	}
+  }
 
-	"defined" in {
-		runCapture(
-			"""
+  "defined" in {
+    runCapture(
+      """
 				|var a = 3
 				|var b
 				|
@@ -230,12 +229,12 @@ class FunLTests extends FreeSpec with ScalaCheckPropertyChecks with Matchers {
 				|
 				|write( a, b )
 			""".stripMargin
-		) shouldBe "123, undefined"
-	}
+    ) shouldBe "123, undefined"
+  }
 
-	"undefined" in {
-		runCapture(
-			"""
+  "undefined" in {
+    runCapture(
+      """
 				|var a = 3
 				|var b
 				|
@@ -244,51 +243,51 @@ class FunLTests extends FreeSpec with ScalaCheckPropertyChecks with Matchers {
 				|
 				|write( a, b )
 			""".stripMargin
-		) shouldBe "3, 123"
-	}
+    ) shouldBe "3, 123"
+  }
 
-	"set comprehension" in {
-		runCapture(
-			"""
+  "set comprehension" in {
+    runCapture(
+      """
 				|write( {x\2 | x <- 1..5} )
 			""".stripMargin
-		) shouldBe "{0, 1, 2}"
-	}
+    ) shouldBe "{0, 1, 2}"
+  }
 
-	"nested every" in {
-		runCapture(
-			"""
+  "nested every" in {
+    runCapture(
+      """
 				|every x = 1|2 do
 				|  every y = 3|4 do
 				|    write( x, y )
 			""".stripMargin
-		) shouldBe
-			"""
+    ) shouldBe
+      """
 				|1, 3
 				|1, 4
 				|2, 3
 				|2, 4
 			""".stripMargin.trim
-	}
+  }
 
-	"nested for" in {
-		runCapture(
-			"""
+  "nested for" in {
+    runCapture(
+      """
 				|for x <- [3, 4], y <- [5, 6] do
 				|  write( x, y )
 			""".stripMargin
-		) shouldBe
-			"""
+    ) shouldBe
+      """
 				|3, 5
 				|3, 6
 				|4, 5
 				|4, 6
 			""".stripMargin.trim
-	}
+  }
 
-	"mutable maps" in {
-		runCapture(
-			"""
+  "mutable maps" in {
+    runCapture(
+      """
 				|val m = table( {asdf: 3, rtyu: 4} )
 				|
 				|write( m )
@@ -296,18 +295,24 @@ class FunLTests extends FreeSpec with ScalaCheckPropertyChecks with Matchers {
 				|write( m )
 				|m('rtyu') = 6
 				|write( m )
+        |m.qwer = 7
+        |write( m )
+        |m('zxcv') = 8
+        |write( m )
 			""".stripMargin
-		) shouldBe
-			"""
+    ) shouldBe
+      """
 				|{"asdf": 3, "rtyu": 4}
 				|{"asdf": 5, "rtyu": 4}
 				|{"asdf": 5, "rtyu": 6}
+        |{"asdf": 5, "rtyu": 6, "qwer": 7}
+        |{"asdf": 5, "rtyu": 6, "qwer": 7, "zxcv": 8}
 			""".stripMargin.trim
-	}
+  }
 
-	"variable shadowing" in {
-		runCapture(
-			"""
+  "variable shadowing" in {
+    runCapture(
+      """
 				|var k = 123
 				|
 				|if true
@@ -317,16 +322,16 @@ class FunLTests extends FreeSpec with ScalaCheckPropertyChecks with Matchers {
 				|
 				|write( k )
 			""".stripMargin
-		) shouldBe
-			"""
+    ) shouldBe
+      """
 				|456
 				|123
 			""".stripMargin.trim
-	}
+  }
 
-	"while loop lexical scope" in {
-		runCapture(
-			"""
+  "while loop lexical scope" in {
+    runCapture(
+      """
 				|var n = 0
 				|
 				|while n++ < 2
@@ -337,17 +342,17 @@ class FunLTests extends FreeSpec with ScalaCheckPropertyChecks with Matchers {
 				|
 				|write( a, b, n )
 			""".stripMargin
-		) shouldBe
-			"""
+    ) shouldBe
+      """
 				|2, 3, 1
 				|4, 6, 2
 				|undefined, undefined, 3
 			""".stripMargin.trim
-	}
+  }
 
-	"break" in {
-		runCapture(
-			"""
+  "break" in {
+    runCapture(
+      """
 				|var i
 				|var j
 				|val b = buffer()
@@ -395,17 +400,17 @@ class FunLTests extends FreeSpec with ScalaCheckPropertyChecks with Matchers {
 				|
 				|write( b2 )
 			""".stripMargin
-		) shouldBe
-			"""
+    ) shouldBe
+      """
 				|ArrayBuffer((1, 1), (1, 2), (2, 1), (2, 2), (3, 1), (4, 1), (4, 2))
 				|ArrayBuffer((1, 1), (1, 2), (2, 1), (2, 2), (3, 1), (4, 1), (4, 2))
 				|ArrayBuffer((1, 1), (1, 2), (2, 1), (2, 2), (3, 1), (4, 1), (4, 2))
 			""".stripMargin.trim
-	}
+  }
 
-	"continue" in {
-		runCapture(
-			"""
+  "continue" in {
+    runCapture(
+      """
 				|var i
 				|var j
 				|val b = buffer()
@@ -453,21 +458,21 @@ class FunLTests extends FreeSpec with ScalaCheckPropertyChecks with Matchers {
 				|
 				|write( b2 )
 			""".stripMargin
-		) shouldBe
-			"""
+    ) shouldBe
+      """
 				|ArrayBuffer((1, 1), (1, 2), (2, 1), (2, 2), (3, 1), (4, 1), (4, 2), (6, 1), (7, 1), (7, 2), (8, 1), (8, 2), (9, 1))
 				|ArrayBuffer((1, 1), (1, 2), (2, 1), (2, 2), (3, 1), (4, 1), (4, 2), (6, 1), (7, 1), (7, 2), (8, 1), (8, 2), (9, 1))
 				|ArrayBuffer((1, 1), (1, 2), (2, 1), (2, 2), (3, 1), (4, 1), (4, 2), (6, 1), (7, 1), (7, 2), (8, 1), (8, 2), (9, 1))
 			""".stripMargin.trim
-	}
+  }
 
-	"to" in {
-		runCapture(
-			"""
+  "to" in {
+    runCapture(
+      """
 				|every write( (k = 1 to 3) to k + 2 )
 			""".stripMargin
-		) shouldBe
-			"""
+    ) shouldBe
+      """
 				|1
 				|2
 				|3
@@ -478,11 +483,11 @@ class FunLTests extends FreeSpec with ScalaCheckPropertyChecks with Matchers {
 				|4
 				|5
 			""".stripMargin.trim
-	}
+  }
 
-	"elements" in {
-		runCapture(
-			"""
+  "elements" in {
+    runCapture(
+      """
 				|data record( a, b )
 				|val r = record( 123, 456 )
 				|val m = {a: 123, "b": 456}
@@ -491,48 +496,48 @@ class FunLTests extends FreeSpec with ScalaCheckPropertyChecks with Matchers {
 				|write( m.a, m.b, m, m("a") )
 				|write( [3, 4, 5](1) )
 			""".stripMargin
-		) shouldBe
-			"""
+    ) shouldBe
+      """
 				|123, 456, record( 123, 456 ), 456, 456
 				|123, 456, {"a": 123, "b": 456}, 123
 				|4
 			""".stripMargin.trim
-	}
+  }
 
-	"repeated alternation 1" in {
-		runCapture(
-			"""
+  "repeated alternation 1" in {
+    runCapture(
+      """
 				|var a = 0
 				|
 				|every write( |(if a++ < 3 then a) )
 			""".stripMargin
-		) shouldBe
-			"""
+    ) shouldBe
+      """
 				|1
 				|2
 				|3
 			""".stripMargin.trim
-	}
+  }
 
-	"list comprehension scope" in {
-		runCapture(
-			"""
+  "list comprehension scope" in {
+    runCapture(
+      """
 				|var k = 123
 				|
 				|write( [2k - 1 | k <- 3..<5] )
 				|
 				|write( k )
 			""".stripMargin
-		) shouldBe
-			"""
+    ) shouldBe
+      """
 				|[5, 7]
 				|123
 			""".stripMargin.trim
-	}
+  }
 
-	"for loop scope" in {
-		runCapture(
-			"""
+  "for loop scope" in {
+    runCapture(
+      """
 				|val a = 123
 				|
 				|for a <- 1..3
@@ -540,18 +545,18 @@ class FunLTests extends FreeSpec with ScalaCheckPropertyChecks with Matchers {
 				|
 				|write( a )
 			""".stripMargin
-		) shouldBe
-			"""
+    ) shouldBe
+      """
 				|1
 				|2
 				|3
 				|123
 			""".stripMargin.trim
-	}
+  }
 
-	"nested block declaration" in {
-		runCapture(
-			"""
+  "nested block declaration" in {
+    runCapture(
+      """
 				|data num( asdf )
 				|
 				|val (fac4, constructor) =
@@ -565,24 +570,24 @@ class FunLTests extends FreeSpec with ScalaCheckPropertyChecks with Matchers {
 				|
 				|write( fac4, constructor, x, num )
 			""".stripMargin
-		) shouldBe "24, RecordConstructor(num, num, [Symbol(v)]), undefined, RecordConstructor(num, num, [Symbol(asdf)])"
-	}
+    ) shouldBe "24, RecordConstructor(num, num, [Symbol(v)]), undefined, RecordConstructor(num, num, [Symbol(asdf)])"
+  }
 
-	"nested compound expression declaration" in {
-		runCapture(
-			"""
+  "nested compound expression declaration" in {
+    runCapture(
+      """
 				|val fac4 = (var x = 1; for i <- 1..4 do (write( i ); x *= i); x)
 				|
 				|write( fac4, x )
 			""".stripMargin
-		) shouldBe
-		"""
+    ) shouldBe
+      """
 			|1
 			|2
 			|3
 			|4
 			|24, undefined
 		""".stripMargin.trim
-	}
+  }
 
 }

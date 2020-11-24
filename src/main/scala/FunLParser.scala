@@ -306,6 +306,8 @@ class FunLParser extends StandardTokenParsers with PackratParsers {
     parse(grammar, new CharSequenceReader(src)) match {
       case Success(tree, _)       => tree
       case NoSuccess(error, rest) => problem(rest.pos, error)
+      case Error(msg, next)       => problem(next.pos, msg)
+      case Failure(msg, next)     => problem(next.pos, msg)
     }
   }
 

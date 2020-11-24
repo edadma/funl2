@@ -17,7 +17,8 @@ import xyz.hyperreal.bvm._
 
 object Predef {
 
-  val natives = Native(Natives) map (n => n.name -> n) toMap
+  val natives: Map[String, Native] =
+    Native(Natives) map (n => n.name -> n) toMap
 
   val constants =
     Map(
@@ -497,9 +498,9 @@ object Predef {
         }
       },
       "gc" -> { (vm: VM, apos: Position, ps: List[Position], args: Any) =>
-        System.gc
-        System.gc
-        System.gc
+        System.gc()
+        System.gc()
+        System.gc()
       },
       "sleep" -> { (vm: VM, apos: Position, ps: List[Position], args: Any) =>
         deref(args) match {
@@ -565,53 +566,82 @@ object Predef {
       "vmscaninfo" -> ((vm: VM) =>
         new Tuple(immutable.ArraySeq(vm.seq, vm.scanpos + 1))),
       "vmstacksize" -> ((vm: VM) => vm.getdata.size),
-      "rndi" -> ((vm: VM) => BigInt(rnd)),
-      "rnd" -> ((vm: VM) => rnd / p32)
+      "rndi" -> ((_: VM) => BigInt(rnd)),
+      "rnd" -> ((_: VM) => rnd / p32)
     )
 
-  val macros =
+  val macros: Map[String, List[AST] => AST] =
     Map[String, List[AST] => AST](
       "string" -> {
         case List(a: ExpressionAST) => PatternExpressionAST(StringPattern(a))
+        case _ =>
+          problem(null, "string() macro can only be applied to an expression")
       },
       "rep1" -> {
         case List(PatternExpressionAST(pat)) =>
           PatternExpressionAST(OneOrMorePattern(pat))
+        case _ =>
+          problem(null,
+                  "rep1() macro can only be applied to a pattern expression")
       },
       "rep" -> {
         case List(PatternExpressionAST(pat)) =>
           PatternExpressionAST(ZeroOrMorePattern(pat))
+        case _ =>
+          problem(null,
+                  "rep() macro can only be applied to a pattern expression")
       },
       "opt" -> {
         case List(PatternExpressionAST(pat)) =>
           PatternExpressionAST(OptionalPattern(pat))
+        case _ =>
+          problem(null,
+                  "opt() macro can only be applied to a pattern expression")
       },
       "rrep1" -> {
         case List(PatternExpressionAST(pat)) =>
           PatternExpressionAST(ReluctantOneOrMorePattern(pat))
+        case _ =>
+          problem(null,
+                  "rrep1() macro can only be applied to a pattern expression")
       },
       "rrep" -> {
         case List(PatternExpressionAST(pat)) =>
           PatternExpressionAST(ReluctantZeroOrMorePattern(pat))
+        case _ =>
+          problem(null,
+                  "rrep1() macro can only be applied to a pattern expression")
       },
       "ropt" -> {
         case List(PatternExpressionAST(pat)) =>
           PatternExpressionAST(ReluctantOptionalPattern(pat))
+        case _ =>
+          problem(null,
+                  "ropt() macro can only be applied to a pattern expression")
       },
       "dot" -> {
         case List() => PatternExpressionAST(DotPattern)
+        case _ =>
+          problem(null,
+                  "dot() macro can only be applied to a pattern expression")
       },
       "cat" -> {
         case ps: List[_] if ps.forall(_.isInstanceOf[PatternExpressionAST]) =>
           PatternExpressionAST(
             ConcatenationPattern(
               ps.asInstanceOf[List[PatternExpressionAST]] map (_.pat)))
+        case _ =>
+          problem(null,
+                  "cat() macro can only be applied to pattern expressions")
       },
       "capture" -> {
         case List(LiteralExpressionAST(name), PatternExpressionAST(pat))
             if name.isInstanceOf[String] =>
           PatternExpressionAST(
             CapturePattern(name.asInstanceOf[String], pat, null))
+        case _ =>
+          problem(null,
+                  "capture() macro can only be applied to pattern expressions")
       },
     )
 }

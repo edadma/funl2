@@ -3,12 +3,14 @@ package xyz.hyperreal.funl2
 import org.scalatest._
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
+class FunLExamples
+    extends FreeSpec
+    with ScalaCheckPropertyChecks
+    with Matchers {
 
-class FunLExamples extends FreeSpec with ScalaCheckPropertyChecks with Matchers {
-
-	"hanoi" in {
-		runCapture(
-			"""
+  "hanoi" in {
+    runCapture(
+      """
 				|val a = buffer( 5..1 by -1 )
 				|val b = buffer()
 				|val c = buffer()
@@ -27,12 +29,12 @@ class FunLExamples extends FreeSpec with ScalaCheckPropertyChecks with Matchers 
 				|hanoi( 5, a, b, c )
 				|write( a, b, c )
 			""".stripMargin
-		) shouldBe "ArrayBuffer(), ArrayBuffer(5, 4, 3, 2, 1), ArrayBuffer()"
-	}
+    ) shouldBe "ArrayBuffer(), ArrayBuffer(5, 4, 3, 2, 1), ArrayBuffer()"
+  }
 
-	"bmi 1" in {
-		runCapture(
-			"""
+  "bmi 1" in {
+    runCapture(
+      """
 				|def bmiTell( weight, height )
 				|  | bmi <= 18.5 = "You're underweight, you emo, you!"
 				|  | bmi <= 25.0 = "You're supposedly normal. Pffft, I bet you're ugly!"
@@ -43,16 +45,16 @@ class FunLExamples extends FreeSpec with ScalaCheckPropertyChecks with Matchers 
 				|write( bmiTell(95.2544, 1.675) )
 				|write( bmiTell(70, 1.675) )
 			""".stripMargin
-		) shouldBe
-			"""
+    ) shouldBe
+      """
 				|You're a whale, congratulations!
 				|You're supposedly normal. Pffft, I bet you're ugly!
 			""".stripMargin.trim
-	}
+  }
 
-	"bmi 2" in {
-		runCapture(
-			"""
+  "bmi 2" in {
+    runCapture(
+      """
 				|def bmiTell( weight, height )
 				|  | bmi <= skinny = "You're underweight, you emo, you!"
 				|  | bmi <= normal = "You're supposedly normal. Pffft, I bet you're ugly!"
@@ -65,49 +67,49 @@ class FunLExamples extends FreeSpec with ScalaCheckPropertyChecks with Matchers 
 				|write( bmiTell(95.2544, 1.675) )
 				|write( bmiTell(70, 1.675) )
 			""".stripMargin
-		) shouldBe
-			"""
+    ) shouldBe
+      """
 				|You're a whale, congratulations!
 				|You're supposedly normal. Pffft, I bet you're ugly!
 			""".stripMargin.trim
-	}
+  }
 
-	"bmi 3" in {
-		runCapture(
-			"""
+  "bmi 3" in {
+    runCapture(
+      """
 				|def calcBmis( xs ) = [bmi( w, h ) | (w, h) <- xs] where bmi( weight, height ) = weight / height ^ 2
 				|
 				|write( calcBmis([(95.2544, 1.675), (70, 1.675)]) )
 			""".stripMargin
-		) shouldBe "[33.95122298952996, 24.94987747828024]"
-	}
+    ) shouldBe "[33.95122298952996, 24.94987747828024]"
+  }
 
-	"bmi 4" in {
-		runCapture(
-			"""
+  "bmi 4" in {
+    runCapture(
+      """
 				|def calcBmis( xs ) = [bmi( w, h ) | (w, h) <- xs]
 				|  where bmi( weight, height ) = weight / height ^ 2
 				|
 				|write( calcBmis([(95.2544, 1.675), (70, 1.675)]) )
 			""".stripMargin
-		) shouldBe "[33.95122298952996, 24.94987747828024]"
-	}
+    ) shouldBe "[33.95122298952996, 24.94987747828024]"
+  }
 
-	"bmi 5" in {
-		runCapture(
-			"""
+  "bmi 5" in {
+    runCapture(
+      """
 				|def calcBmis( xs ) = [bmi( w, h ) | (w, h) <- xs]
 				|  where
 				|    bmi( weight, height ) = weight / height ^ 2
 				|
 				|write( calcBmis([(95.2544, 1.675), (70, 1.675)]) )
 			""".stripMargin
-		) shouldBe "[33.95122298952996, 24.94987747828024]"
-	}
+    ) shouldBe "[33.95122298952996, 24.94987747828024]"
+  }
 
-	"divisors" in {
-		runCapture(
-			"""
+  "divisors" in {
+    runCapture(
+      """
 				|def divisors( n )
 				|  var dlist = []
 				|
@@ -128,12 +130,12 @@ class FunLExamples extends FreeSpec with ScalaCheckPropertyChecks with Matchers 
 				|every divs += divisors( 12 )
 				|write( divs )
 			""".stripMargin
-		) shouldBe "ArrayBuffer(1, 2, 3, 12, 6, 4)"
-	}
+    ) shouldBe "ArrayBuffer(1, 2, 3, 12, 6, 4)"
+  }
 
-	"exponential 1 (rewritten from Haskell)" in {
-		runCapture(
-			"""
+  "exponential 1 (rewritten from Haskell)" in {
+    runCapture(
+      """
 				|def pow( _, 0 ) = 1
 				|def pow( x, n ) | n > 0 = pow_( x, n - 1, x )
 				|  where
@@ -146,8 +148,8 @@ class FunLExamples extends FreeSpec with ScalaCheckPropertyChecks with Matchers 
 				|for n <- 0..18
 				|  write( n, pow(3, n) )
 			""".stripMargin
-		) shouldBe
-			"""
+    ) shouldBe
+      """
 				|0, 1
 				|1, 3
 				|2, 9
@@ -168,11 +170,11 @@ class FunLExamples extends FreeSpec with ScalaCheckPropertyChecks with Matchers 
 				|17, 129140163
 				|18, 387420489
 			""".stripMargin.trim
-	}
+  }
 
-	"exponential 2 (from Haskell)" in {
-		runCapture(
-			"""
+  "exponential 2 (from Haskell)" in {
+    runCapture(
+      """
 				|def pow( _, 0 ) = 1
 				|def pow( x, n ) | n > 0 = f( x, n - 1, x )
 				|  where
@@ -189,8 +191,8 @@ class FunLExamples extends FreeSpec with ScalaCheckPropertyChecks with Matchers 
 				|for n <- 0..18
 				|  write( n, pow(3, n) )
 			""".stripMargin
-		) shouldBe
-			"""
+    ) shouldBe
+      """
 				|0, 1
 				|1, 2
 				|2, 4
@@ -230,11 +232,11 @@ class FunLExamples extends FreeSpec with ScalaCheckPropertyChecks with Matchers 
 				|17, 129140163
 				|18, 387420489
 			""".stripMargin.trim
-	}
+  }
 
-	"exponential 3 (rewritten from Haskell; with mutually recursive 'where' definitions)" in {
-		runCapture(
-			"""
+  "exponential 3 (rewritten from Haskell; with mutually recursive 'where' definitions)" in {
+    runCapture(
+      """
 				|def pow( _, 0 ) = 1
 				|def pow( x, n ) | n > 0 = pow_( x, n - 1, x )
 				|  where
@@ -251,8 +253,8 @@ class FunLExamples extends FreeSpec with ScalaCheckPropertyChecks with Matchers 
 				|for n <- 0..18
 				|  write( n, pow(3, n) )
 			""".stripMargin
-		) shouldBe
-			"""
+    ) shouldBe
+      """
 				|0, 1
 				|1, 3
 				|2, 9
@@ -273,11 +275,11 @@ class FunLExamples extends FreeSpec with ScalaCheckPropertyChecks with Matchers 
 				|17, 129140163
 				|18, 387420489
 			""".stripMargin.trim
-	}
+  }
 
-	"n queens 1" in {
-		runCapture(
-			"""
+  "n queens 1" in {
+    runCapture(
+      """
 				|val n = 4
 				|
 				|var solution = array( n )
@@ -296,16 +298,16 @@ class FunLExamples extends FreeSpec with ScalaCheckPropertyChecks with Matchers 
 				|
 				|solve( 0 )
 			""".stripMargin
-		) shouldBe
-			"""
+    ) shouldBe
+      """
 				|<1, 3, 0, 2>
 				|<2, 0, 3, 1>
 			""".stripMargin.trim
-	}
+  }
 
-	"n queens 2" in {
-		runCapture(
-			"""
+  "n queens 2" in {
+    runCapture(
+      """
 				|def
 				|  permute( [] ) = seq()
 				|  permute( l ) = permute_( l.length(), array(l) )
@@ -335,16 +337,16 @@ class FunLExamples extends FreeSpec with ScalaCheckPropertyChecks with Matchers 
 				|
 				|every place( permute(0..n - 1), 0 )
 			""".stripMargin
-		) shouldBe
-			"""
+    ) shouldBe
+      """
 				|<1, 3, 0, 2>
 				|<2, 0, 3, 1>
 			""".stripMargin.trim
-	}
+  }
 
-	"sum 3,5" in {
-		runCapture(
-			"""
+  "sum 3,5" in {
+    runCapture(
+      """
 				|def
 				|  foldl( f, z, [] )           = z
 				|  foldl( f, z, x:xs )         = foldl( f, f(z, x), xs )
@@ -353,22 +355,22 @@ class FunLExamples extends FreeSpec with ScalaCheckPropertyChecks with Matchers 
 				|
 				|write( sum([n | n <- 1..1000-1 if 3 div n or 5 div n]) )
 			""".stripMargin
-		) shouldBe "233168"
-	}
+    ) shouldBe "233168"
+  }
 
-	"pythagorean triples" in {
-		runCapture(
-			"""
+  "pythagorean triples" in {
+    runCapture(
+      """
 				|def triples( n ) = [(a, b, c) | a <- 1..n-2, b <- a+1..n-1, c <- b+1..n if a^2 + b^2 == c^2]
 				|
 				|write( triples(20) )
 			""".stripMargin
-		) shouldBe "[(3, 4, 5), (5, 12, 13), (6, 8, 10), (8, 15, 17), (9, 12, 15), (12, 16, 20)]"
-	}
+    ) shouldBe "[(3, 4, 5), (5, 12, 13), (6, 8, 10), (8, 15, 17), (9, 12, 15), (12, 16, 20)]"
+  }
 
-	"seriesUp" in {
-		runCapture(
-			"""
+  "seriesUp" in {
+    runCapture(
+      """
 				|def
 				|  foldr( f, z, [] )     =  z
 				|  foldr( f, z, (x:xs) ) =  f( x, foldr(f, z, xs) )
@@ -384,12 +386,12 @@ class FunLExamples extends FreeSpec with ScalaCheckPropertyChecks with Matchers 
 				|
 				|write( seriesUp(4) )
 			""".stripMargin
-		) shouldBe "[1, 1, 2, 1, 2, 3, 1, 2, 3, 4]"
-	}
+    ) shouldBe "[1, 1, 2, 1, 2, 3, 1, 2, 3, 4]"
+  }
 
-	"merge sort" in {
-		runCapture(
-			"""
+  "merge sort" in {
+    runCapture(
+      """
 				|def
 				|  merge( [], ys )               = ys
 				|  merge( xs, [] )               = xs
@@ -407,24 +409,24 @@ class FunLExamples extends FreeSpec with ScalaCheckPropertyChecks with Matchers 
 				|
 				|write( mergeSort([4, 6, 9, 1, 3, 5, 7, 2, 8]) )
 			""".stripMargin
-		) shouldBe "[1, 2, 3, 4, 5, 6, 7, 8, 9]"
-	}
+    ) shouldBe "[1, 2, 3, 4, 5, 6, 7, 8, 9]"
+  }
 
-	"quicksort 1" in {
-		runCapture(
-			"""
+  "quicksort 1" in {
+    runCapture(
+      """
 				|def
 				|  quicksort( [] )    =  []
 				|  quicksort( x:xs )  =  quicksort( [a | a <- xs if a <= x] ) + [x] + quicksort( [a | a <- xs if a > x] )
 				|
 				|write( quicksort([4, 6, 9, 1, 3, 5, 7, 2, 8]) )
 			""".stripMargin
-		) shouldBe "[1, 2, 3, 4, 5, 6, 7, 8, 9]"
-	}
+    ) shouldBe "[1, 2, 3, 4, 5, 6, 7, 8, 9]"
+  }
 
-	"quicksort 2" in {
-		runCapture(
-			"""
+  "quicksort 2" in {
+    runCapture(
+      """
 				|def foldr( f, z, [] )     =  z
 				|def foldr( f, z, (x:xs) ) =  f( x, foldr(f, z, xs) )
 				|
@@ -440,12 +442,12 @@ class FunLExamples extends FreeSpec with ScalaCheckPropertyChecks with Matchers 
 				|
 				|write( qsort([4, 6, 9, 1, 3, 5, 7, 2, 8]) )
 			""".stripMargin
-		) shouldBe "[1, 2, 3, 4, 5, 6, 7, 8, 9]"
-	}
+    ) shouldBe "[1, 2, 3, 4, 5, 6, 7, 8, 9]"
+  }
 
-	"filter" in {
-		runCapture(
-			"""
+  "filter" in {
+    runCapture(
+      """
 				|var multiple = 2
 				|var lower = 4
 				|
@@ -462,12 +464,12 @@ class FunLExamples extends FreeSpec with ScalaCheckPropertyChecks with Matchers 
 				|
 				|write( foldl((+), 0, map((*multiple), filter((lower<), 3..6))) )
 			""".stripMargin
-		) shouldBe "22"
-	}
+    ) shouldBe "22"
+  }
 
-	"levenshtein" in {
-		runCapture(
-			"""
+  "levenshtein" in {
+    runCapture(
+      """
 				|def levenshtein( s1, s2 ) = lev( s1.length(), s2.length(), s1, s2 )
 				|
 				|def lev( i, j, a, b )
@@ -478,12 +480,12 @@ class FunLExamples extends FreeSpec with ScalaCheckPropertyChecks with Matchers 
 				|
 				|write( levenshtein('kitten', 'sitting') )
 			""".stripMargin
-		) shouldBe "3"
-	}
+    ) shouldBe "3"
+  }
 
-	"fibonacci 1" in {
-		runCapture(
-			"""
+  "fibonacci 1" in {
+    runCapture(
+      """
 				|def fib( n )
 				|  result = []
 				|  a, b = 0, 1
@@ -496,24 +498,24 @@ class FunLExamples extends FreeSpec with ScalaCheckPropertyChecks with Matchers 
 				|
 				|write( fib(10) )
 			""".stripMargin
-		) shouldBe "[0, 1, 1, 2, 3, 5, 8]"
-	}
+    ) shouldBe "[0, 1, 1, 2, 3, 5, 8]"
+  }
 
-	"factorial 1" in {
-		runCapture(
-			"""
+  "factorial 1" in {
+    runCapture(
+      """
 				|def
 				|  factorial( 0 | 1 ) = 1
 				|  factorial( n ) = n*factorial( n - 1 )
 				|
 				|write( factorial(5) )
 			""".stripMargin
-		) shouldBe "120"
-	}
+    ) shouldBe "120"
+  }
 
-	"factorial 2" in {
-		runCapture(
-			"""
+  "factorial 2" in {
+    runCapture(
+      """
 				|def factorial( n )
 				|  var i = 1
 				|
@@ -522,12 +524,12 @@ class FunLExamples extends FreeSpec with ScalaCheckPropertyChecks with Matchers 
 				|
 				|write( factorial(5) )
 			""".stripMargin
-		) shouldBe "120"
-	}
+    ) shouldBe "120"
+  }
 
-	"crossword" in {
-		runCapture(
-			"""
+  "crossword" in {
+    runCapture(
+      """
 				|def cross( word1, word2 )
 				|  var i
 				|  var j
@@ -541,8 +543,8 @@ class FunLExamples extends FreeSpec with ScalaCheckPropertyChecks with Matchers 
 				|
 				|cross( 'lottery', 'loto' )
 			""".stripMargin
-		) shouldBe
-			"""
+    ) shouldBe
+      """
 				|lottery
 				|o
 				|t
@@ -568,21 +570,21 @@ class FunLExamples extends FreeSpec with ScalaCheckPropertyChecks with Matchers 
 				|lottery
 				|   o
 			""".stripMargin.trim
-	}
+  }
 
-	"ackermann" in {
-		runCapture(
-			"""
+  "ackermann" in {
+    runCapture(
+      """
 				|def
 				|  ackermann( 0, n ) = n + 1
 				|  ackermann( m, 0 ) = ackermann( m - 1, 1 )
 				|  ackermann( m, n ) = ackermann( m - 1, ackermann(m, n - 1) )
 				|
 				|for m <- 0..3, n <- 0..4
-				|  write( "Ackermann( $m, $n ) = " + ackermann(m, n) )
+				|  write( "Ackermann( $m, $n ) = ${ackermann(m, n)}" )
 			""".stripMargin
-		) shouldBe
-			"""
+    ) shouldBe
+      """
 				|Ackermann( 0, 0 ) = 1
 				|Ackermann( 0, 1 ) = 2
 				|Ackermann( 0, 2 ) = 3
@@ -604,11 +606,11 @@ class FunLExamples extends FreeSpec with ScalaCheckPropertyChecks with Matchers 
 				|Ackermann( 3, 3 ) = 61
 				|Ackermann( 3, 4 ) = 125
 			""".stripMargin.trim
-	}
+  }
 
-	"perfect" in {
-		runCapture(
-			"""
+  "perfect" in {
+    runCapture(
+      """
 				|def
 				|  foldl( f, z, [] )           = z
 				|  foldl( f, z, x:xs )         = foldl( f, f(z, x), xs )
@@ -620,16 +622,16 @@ class FunLExamples extends FreeSpec with ScalaCheckPropertyChecks with Matchers 
 				|for i <- 1..30 if perfect( i )
 				|   write( i )
 			""".stripMargin
-		) shouldBe
-			"""
+    ) shouldBe
+      """
 				|6
 				|28
 			""".stripMargin.trim
-	}
+  }
 
-	"gcd 1" in {
-		runCapture(
-			"""
+  "gcd 1" in {
+    runCapture(
+      """
 				|def gcd( a, b )
 				|  var a_ = a
 				|  var b_ = b
@@ -641,12 +643,12 @@ class FunLExamples extends FreeSpec with ScalaCheckPropertyChecks with Matchers 
 				|
 				|write( gcd(30, 12) )
 			""".stripMargin
-		) shouldBe "6"
-	}
+    ) shouldBe "6"
+  }
 
-	"gcd 2" in {
-		runCapture(
-			"""
+  "gcd 2" in {
+    runCapture(
+      """
 				|def
 				|  gcd( a, a )   = a
 				|  gcd( a, b )
@@ -655,12 +657,12 @@ class FunLExamples extends FreeSpec with ScalaCheckPropertyChecks with Matchers 
 				|
 				|write( gcd(30, 12) )
 			""".stripMargin
-		) shouldBe "6"
-	}
+    ) shouldBe "6"
+  }
 
-	"gcd 3" in {
-		runCapture(
-			"""
+  "gcd 3" in {
+    runCapture(
+      """
 				|def gcd( 0, 0 ) = error( "gcd: gcd( 0, 0 ) is undefined" )
 				|def gcd( x, y ) = gcd_( abs(x), abs(y) )
 				|  where
@@ -679,8 +681,8 @@ class FunLExamples extends FreeSpec with ScalaCheckPropertyChecks with Matchers 
 				|write( gcd(12, 30) )
 				|write( gcd(30, 12) )
 			""".stripMargin
-		) shouldBe
-			"""
+    ) shouldBe
+      """
 				|1
 				|1
 				|1
@@ -693,11 +695,11 @@ class FunLExamples extends FreeSpec with ScalaCheckPropertyChecks with Matchers 
 				|6
 				|6
 			""".stripMargin.trim
-	}
+  }
 
-	"max 1" in {
-		runCapture(
-			"""
+  "max 1" in {
+    runCapture(
+      """
 				|def
 				|  max( [] ) = error( "max: empty list" )
 				|  max( h:t )
@@ -709,12 +711,12 @@ class FunLExamples extends FreeSpec with ScalaCheckPropertyChecks with Matchers 
 				|
 				|every write( max([1, 2, 3, 4, 0, -1]) )
 			""".stripMargin
-		) shouldBe "4"
-	}
+    ) shouldBe "4"
+  }
 
-	"sign" in {
-		runCapture(
-			"""
+  "sign" in {
+    runCapture(
+      """
 				|def
 				|  sign( x )
 				|    | x < 0     = -1
@@ -723,12 +725,12 @@ class FunLExamples extends FreeSpec with ScalaCheckPropertyChecks with Matchers 
 				|
 				|write( sign(2) )
 			""".stripMargin
-		) shouldBe "1"
-	}
+    ) shouldBe "1"
+  }
 
-	"take" in {
-		runCapture(
-			"""
+  "take" in {
+    runCapture(
+      """
 				|def
 				|  filter( p, [] )             =  []
 				|  filter( p, x:xs ) | p( x )  =  x : filter( p, xs )
@@ -742,16 +744,16 @@ class FunLExamples extends FreeSpec with ScalaCheckPropertyChecks with Matchers 
 				|write( take(2, filter((>= 5), 1..10)) )
 				|write( take(2, filter(a -> a >= 5, 1..10)) )
 			""".stripMargin
-		) shouldBe
-			"""
+    ) shouldBe
+      """
 				|[5, 6]
 				|[5, 6]
 			""".stripMargin.trim
-	}
+  }
 
-	"flatten" in {
-		runCapture(
-			"""
+  "flatten" in {
+    runCapture(
+      """
 				|def flatten( l )
 				|  val res = buffer()
 				|
@@ -765,20 +767,20 @@ class FunLExamples extends FreeSpec with ScalaCheckPropertyChecks with Matchers 
 				|
 				|write( flatten([[1], 2, [[3,4], 5], [[[]]], [[[6]]], 7, 8, []]) )
 			""".stripMargin
-		) shouldBe "[1, 2, 3, 4, 5, 6, 7, 8]"
-	}
+    ) shouldBe "[1, 2, 3, 4, 5, 6, 7, 8]"
+  }
 
-	"select" in {
-		runCapture(
-			"""
+  "select" in {
+    runCapture(
+      """
 				|every write( divisors(1001) )
 				|
 				|def divisors( n ) = select( 1 to n, (div n) )
 				|
 				|def select( a, p ) = if p( a ) then a
 			""".stripMargin
-		) shouldBe
-			"""
+    ) shouldBe
+      """
 				|1
 				|7
 				|11
@@ -788,11 +790,11 @@ class FunLExamples extends FreeSpec with ScalaCheckPropertyChecks with Matchers 
 				|143
 				|1001
 			""".stripMargin.trim
-	}
+  }
 
-	"string scan 1" in {
-		runCapture(
-			"""
+  "string scan 1" in {
+    runCapture(
+      """
 				|'abcdefg' ?
 				|  while move(1)
 				|    write( move(1) )
@@ -812,8 +814,8 @@ class FunLExamples extends FreeSpec with ScalaCheckPropertyChecks with Matchers 
 				|
 				|write( 'abc' ? find('b') )
 					""".stripMargin
-		) shouldBe
-			"""
+    ) shouldBe
+      """
 				|b
 				|d
 				|f
@@ -829,11 +831,11 @@ class FunLExamples extends FreeSpec with ScalaCheckPropertyChecks with Matchers 
 				|yes
 				|2
 			""".stripMargin.trim
-	}
+  }
 
-	"string scan 2" in {
-		runCapture(
-			"""
+  "string scan 2" in {
+    runCapture(
+      """
 				|val vowel = cset( 'aeiou' )
 				|val text = 'test string'
 				|
@@ -871,8 +873,8 @@ class FunLExamples extends FreeSpec with ScalaCheckPropertyChecks with Matchers 
 				|line ?= tab(many(' ')) & tab(0)
 				|write( line )
 			""".stripMargin
-		) shouldBe
-			"""
+    ) shouldBe
+      """
 				|2
 				|9
 				|st string
@@ -888,26 +890,26 @@ class FunLExamples extends FreeSpec with ScalaCheckPropertyChecks with Matchers 
 				|s
 				|asdf
 			""".stripMargin.trim
-	}
+  }
 
-	"data backtracking 1" in {
-		runCapture(
-			"""
+  "data backtracking 1" in {
+    runCapture(
+      """
 				|"asdf,zxvc." ? tab(upto(',') + 1) & write(move(1)) | write(tab(upto('.')))
 				|"asdf," ? tab(upto(',') + 1) & write(move(1)) | write(tab(upto('.')))
 				|"asdf." ? tab(upto(',') + 1) & write(move(1)) | write(tab(upto('.')))
 				|"asdf" ? tab(upto(',') + 1) & write(move(1)) | write(tab(upto('.')))
 			""".stripMargin
-		) shouldBe
-			"""
+    ) shouldBe
+      """
 				|z
 				|asdf
 			""".stripMargin.trim
-	}
+  }
 
-	"permutations" in {
-		runCapture(
-			"""
+  "permutations" in {
+    runCapture(
+      """
 				|every write( permute([1, 2, 3, 4]) )
 				|
 				|def
@@ -927,8 +929,8 @@ class FunLExamples extends FreeSpec with ScalaCheckPropertyChecks with Matchers 
 				|
 				|      permute_( n - 1, a )
 			""".stripMargin
-		) shouldBe
-			"""
+    ) shouldBe
+      """
 				|<1, 2, 3, 4>
 				|<2, 1, 3, 4>
 				|<3, 1, 2, 4>
@@ -954,6 +956,6 @@ class FunLExamples extends FreeSpec with ScalaCheckPropertyChecks with Matchers 
 				|<3, 2, 4, 1>
 				|<2, 3, 4, 1>
 			""".stripMargin.trim
-	}
+  }
 
 }
