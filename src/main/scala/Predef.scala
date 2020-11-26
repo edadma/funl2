@@ -524,8 +524,10 @@ object Predef {
 
   private def rnd = devrandom.readInt.asInstanceOf[Long] & 0xFFFFFFFFL
 
-  val sysvars =
+  val sysvars: Map[String, VM => Any] =
     Map(
+      "subject" -> (vm => vm.seq.toString),
+      "pos" -> (vm => vm.scanpos + 1),
       "args" -> ((vm: VM) => vm.args),
       "version" -> ((_: VM) => "0.4.4"),
       "timemillis" -> ((_: VM) => BigInt(System.currentTimeMillis)),

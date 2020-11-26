@@ -959,3 +959,14 @@ class FunLExamples
   }
 
 }
+
+/*
+todo:
+ "Wikipedia"[1]     ==> "W"
+ "Wikipedia"[3]     ==> "k"
+ "Wikipedia"[0]     ==> "a"
+ "Wikipedia"[1:3]   ==> "Wi"
+ "Wikipedia"[-2:0]  ==> "ia"
+ "Wikipedia"[2+:3]  ==> "iki"
+
+ */
