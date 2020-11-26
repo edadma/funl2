@@ -1,6 +1,6 @@
 name := "funl2"
 
-version := "0.5.4"
+version := "0.5.5"
 
 scalaVersion := "2.13.4"
 
@@ -25,7 +25,7 @@ libraryDependencies ++= Seq(
 )
 
 libraryDependencies ++= Seq(
-	"xyz.hyperreal" %% "bvm" % "0.5.7",
+	"xyz.hyperreal" %% "bvm" % "0.5.9",
 	"xyz.hyperreal" %% "indentation-lexical" % "0.9"
 )
 

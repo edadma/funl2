@@ -847,7 +847,8 @@ class FunLParser extends StandardTokenParsers with PackratParsers {
       case p ~ v => UnaryExpressionAST(Symbol("-"), null, p, v)
     } |
       "." ~> incrementExpression ^^ DereferenceExpressionAST |
-      incrementExpression
+      incrementExpression |
+      "=" ~> incrementExpression ^^ MatchExpressionAST
 
   lazy val incrementExpression: PackratParser[ExpressionAST] =
     ("++" | "--") ~ pos ~ generateDefinedExpression ^^ {
