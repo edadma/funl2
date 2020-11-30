@@ -17,6 +17,26 @@ import xyz.hyperreal.bvm._
 
 object Predef {
 
+  def find(vm: VM, q: String, s: String, f: Int): Any = {
+    s.indexOf(q, f) match {
+      case -1 => Fail
+      case idx =>
+        def nextchoice(from: Int): Unit = {
+          s.indexOf(q, from + 1) match {
+            case -1 =>
+            case nextidx =>
+              vm.pushChoice(0, vm => {
+                nextchoice(nextidx)
+                vm.push(nextidx + 1)
+              })
+          }
+        }
+
+        nextchoice(idx)
+        idx + 1
+    }
+  }
+
   val natives: Map[String, Native] =
     Native(Natives) map (n => n.name -> n) toMap
 
@@ -170,34 +190,10 @@ object Predef {
             }
         }
       },
-      "tab" -> { (vm: VM, apos: Position, ps: List[Position], args: Any) =>
-        deref(args) match {
-          case n: Int =>
-            if (n < -vm.seq.length || n > vm.seq.length + 1)
-              Fail
-            else {
-              val pos =
-                if (n > 0)
-                  n - 1
-                else
-                  vm.seq.length - n
-
-              val res =
-                if (vm.scanpos > pos)
-                  vm.seq.subSequence(pos, vm.scanpos)
-                else
-                  vm.seq.subSequence(vm.scanpos, pos)
-              val (oldseq, oldscanpos) = (vm.seq, vm.scanpos)
-
-              vm.pushChoice(vm => {
-                vm.seq = oldseq
-                vm.scanpos = oldscanpos
-              })
-              vm.scanpos = pos
-              res
-            }
-        }
-      },
+      "tab" -> ((vm: VM,
+                 apos: Position,
+                 ps: List[Position],
+                 args: Any) => vm.tabToPosition(deref(args).asInstanceOf[Int])),
       "pos" -> { (vm: VM, apos: Position, ps: List[Position], args: Any) =>
         deref(args) match {
           case n: Int =>
@@ -217,31 +213,39 @@ object Predef {
             }
         }
       },
-      "find" -> { (vm: VM, apos: Position, ps: List[Position], args: Any) =>
-        val (q, s, f) =
-          argsderef(args) match {
-            case str: String                        => (str, vm.seq.toString, vm.scanpos)
-            case ArgList(str: String, subj: String) => (str, subj, 0)
-          }
-
-        s.indexOf(q, f) match {
-          case -1 => Fail
-          case idx =>
-            def nextchoice(from: Int): Unit = {
-              s.indexOf(q, from + 1) match {
-                case -1 =>
-                case nextidx =>
-                  vm.pushChoice(0, vm => {
-                    nextchoice(nextidx)
-                    vm.push(nextidx + 1)
-                  })
-              }
-            }
-
-            nextchoice(idx)
-            idx + 1
-        }
-      },
+//      "scan" -> { (vm: VM, apos: Position, ps: List[Position], args: Any) =>
+//        val (q, s, f) =
+//          argsderef(args) match {
+//            case str: String                        => (str, vm.seq.toString, vm.scanpos)
+//            case ArgList(str: String, subj: String) => (str, subj, 0)
+//          }
+//
+//        find(vm, q, s, f) match {
+//          case Fail   => Fail
+//          case p: Int => vm.tabToPosition(p + q.length)
+//        }
+//      },
+//      "scanto" -> { (vm: VM, apos: Position, ps: List[Position], args: Any) =>
+//        val (q, s, f) =
+//          argsderef(args) match {
+//            case str: String                        => (str, vm.seq.toString, vm.scanpos)
+//            case ArgList(str: String, subj: String) => (str, subj, 0)
+//          }
+//
+//        find(vm, q, s, f) match {
+//          case Fail   => Fail
+//          case p: Int => vm.tabToPosition(p)
+//        }
+//      },
+      "find" -> (
+          (vm: VM,
+           apos: Position,
+           ps: List[Position],
+           args: Any) =>
+            argsderef(args) match {
+              case str: String                        => find(vm, str, vm.seq.toString, vm.scanpos)
+              case ArgList(str: String, subj: String) => find(vm, str, subj, 0)
+            }),
       "cset" -> { (_: VM, apos: Position, ps: List[Position], args: Any) =>
         val list =
           argsderef(args) match {
@@ -318,26 +322,7 @@ object Predef {
         }
       },
       "match" -> { (vm: VM, apos: Position, ps: List[Position], args: Any) =>
-        def matches(s: String): Boolean = {
-          for (k <- 0 until s.length)
-            if (vm.seq.charAt(vm.scanpos + k) != s.charAt(k))
-              return false
-
-          true
-        }
-
-        argsderef(args) match {
-          case s: String =>
-            val end = vm.scanpos + s.length
-
-            if (end <= vm.seq.length)
-              if (matches(s))
-                end + 1
-              else
-                Fail
-            else
-              Fail
-        }
+        vm.matchString(argsderef(args).toString)
       },
       "any" -> { (vm: VM, apos: Position, ps: List[Position], args: Any) =>
         val set =
