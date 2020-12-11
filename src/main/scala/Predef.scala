@@ -213,30 +213,6 @@ object Predef {
             }
         }
       },
-//      "scan" -> { (vm: VM, apos: Position, ps: List[Position], args: Any) =>
-//        val (q, s, f) =
-//          argsderef(args) match {
-//            case str: String                        => (str, vm.seq.toString, vm.scanpos)
-//            case ArgList(str: String, subj: String) => (str, subj, 0)
-//          }
-//
-//        find(vm, q, s, f) match {
-//          case Fail   => Fail
-//          case p: Int => vm.tabToPosition(p + q.length)
-//        }
-//      },
-//      "scanto" -> { (vm: VM, apos: Position, ps: List[Position], args: Any) =>
-//        val (q, s, f) =
-//          argsderef(args) match {
-//            case str: String                        => (str, vm.seq.toString, vm.scanpos)
-//            case ArgList(str: String, subj: String) => (str, subj, 0)
-//          }
-//
-//        find(vm, q, s, f) match {
-//          case Fail   => Fail
-//          case p: Int => vm.tabToPosition(p)
-//        }
-//      },
       "find" -> (
           (vm: VM,
            apos: Position,
