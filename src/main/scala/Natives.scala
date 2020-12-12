@@ -18,4 +18,8 @@ object Natives {
   def sqrt(vm: VM, n: Number): Number = Math.sqrtFunction(n)
 
   def abs(vm: VM, n: Number): Number = Math.absFunction(n)
+
+  def exp(vm: VM, n: Number): Number = Math.expFunction(n)
+
+  def ln(vm: VM, n: Number): Number = Math.lnFunction(n)
 }
